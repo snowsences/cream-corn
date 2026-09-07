@@ -153,7 +153,7 @@ function renderCharts(){const months=chartMonths(),series={water:months.map(mont
 render();
 function chartCard(title,points,color,extra=''){const palette={'#45b8b0':'#35b9b1','#e2ad4c':'#efb43b','#f0845c':'#4d96b7','#b28ad5':'#779fc2'},smoothed=rollingAverage(points),latest=smoothed.at(-1);return `<article class="chart-card"><div class="chart-card-head"><div><h3>${title}</h3><p class="chart-subtitle">3-month rolling average</p></div>${extra}</div><p class="chart-value">Latest: ${money(latest?.value||0)}</p>${chartSvg(smoothed,palette[color]||color)}</article>`}
 let notesMonthId='';const notesDialog=document.getElementById('notesDialog'),notesText=document.getElementById('notesText'),notesCount=document.getElementById('notesCount');function updateNotesCount(){notesCount.textContent=`${notesText.value.length} / 500`}function appendExpenseCommentToNotes(month,entry){const item=`• ${money(entry.final)} — ${entry.comment}`,existing=String(month.notes||'').trim(),next=existing?`${existing}\n${item}`:item;if(next.length<=500){month.notes=next;return true}notice.textContent=`${money(entry.final)} added to spending, but its comment could not be added to Notes because that field is full.`;return false}function openNotes(monthId){const month=data.months.find(item=>item.id===monthId);if(!month)return;notesMonthId=monthId;document.getElementById('notesTitle').textContent=`Notes · ${month.label}`;notesText.value=String(month.notes||'').slice(0,500);updateNotesCount();notesDialog.showModal();notesText.focus()}notesText.oninput=()=>{if(notesText.value.length>500)notesText.value=notesText.value.slice(0,500);updateNotesCount()};document.addEventListener('click',event=>{const button=event.target.closest('[data-notes-month]');if(button)openNotes(button.dataset.notesMonth)});document.getElementById('cancelNotes').onclick=()=>notesDialog.close();document.getElementById('saveNotes').onclick=()=>{const month=data.months.find(item=>item.id===notesMonthId);if(!month)return;month.notes=notesText.value.trim().slice(0,500);save();syncMonth(month);notesDialog.close();render()};
-const escapeTodo=value=>String(value).replace(/[&<>"']/g,character=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[character]));
+function escapeTodo(value){return String(value).replace(/[&<>"']/g,character=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[character]))}
 const displayTodoDate=value=>new Date(`${value}T12:00:00`).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
 function renderTodos(){const list=document.getElementById('todoEntries');if(!list)return;const todos=[...data.todos].sort((a,b)=>Number(Boolean(a.done))-Number(Boolean(b.done))||String(b.date).localeCompare(String(a.date))||String(b.createdAt).localeCompare(String(a.createdAt)));list.innerHTML=todos.length?todos.map(todo=>`<article class="todo-card ${todo.done?'done':''}"><label class="todo-check" aria-label="Mark ${escapeTodo(todo.text)} ${todo.done?'active':'done'}"><input type="checkbox" data-todo-check="${todo.id}" ${todo.done?'checked':''}><span aria-hidden="true">✓</span></label><div class="todo-copy"><p>${escapeTodo(todo.text)}</p><time datetime="${todo.date}">${displayTodoDate(todo.date)}</time></div></article>`).join(''):'<div class="chart-empty">Your active to-dos will appear here.</div>'}
 async function syncTodo(todo){if(!firebaseClient||!firebaseUser)return;try{await firebaseClient.setDoc(firebaseClient.doc(firebaseClient.db,...firebasePath('todos'),todo.id),todo)}catch(error){console.error(error);firebaseStatusMessage('Could not sync this to-do yet. It remains saved on this device.')}}
@@ -566,4 +566,97 @@ const todayTodoRender=render;render=()=>{todayTodoRender();setupBackupTools();re
     applyMonthNotesIcons();
   })();
 </script>
+<script>
+  (() => {
+    const removeLabelText = field => {
+      if (!field) return;
+      [...field.childNodes]
+        .filter(node => node.nodeType === Node.TEXT_NODE)
+        .forEach(node => node.remove());
+    };
+    const amountField = document.querySelector('#expenseDialog .expense-amount-field');
+    const finalField = document.querySelector('#expenseDialog .expense-final-field');
+    const typeField = document.getElementById('expenseCategoryOptions')?.closest('label');
+    const monthField = document.getElementById('expenseMonth')?.closest('label');
+    const commentField = document.getElementById('commentField');
+    removeLabelText(amountField);
+    removeLabelText(monthField);
+    removeLabelText(commentField);
+    typeField?.querySelector(':scope > span')?.remove();
+    document.querySelector('#shoppingSuboptions > span')?.remove();
+    const amount = document.getElementById('expenseAmount');
+    if (amount) {
+      amount.placeholder = '0.00';
+      amount.setAttribute('aria-label', 'Amount');
+    }
+    if (finalField) {
+      const text = [...finalField.childNodes].find(node => node.nodeType === Node.TEXT_NODE);
+      if (text) text.nodeValue = 'Final amount';
+    }
+  })();
+</script>
+<style>
+  #expenseDialog .dialog-grid {
+    grid-template-columns:minmax(0,1fr) max-content!important;
+    gap:8px 16px!important;
+  }
+  #expenseDialog .expense-amount-field,
+  #expenseDialog .expense-final-field { grid-column:auto!important; margin:0!important; }
+  #expenseDialog .expense-final-field {
+    display:flex!important; align-items:baseline; align-self:end; gap:6px;
+    width:max-content; padding-left:16px; color:var(--muted); font-size:14px!important;
+  }
+  #expenseDialog .expense-final-field strong {
+    display:inline!important; min-height:0!important; padding:0!important;
+    border:0!important; border-radius:0!important; background:transparent!important;
+    color:var(--ink)!important; font-size:18px!important;
+  }
+  #expenseDialog #expenseCategoryOptions .choice-option,
+  #expenseDialog .expense-suboptions .choice-option,
+  #expenseDialog #newModifierOptions .choice-option {
+    padding:8px!important; font-size:14px!important; font-weight:500!important;
+  }
+  #expenseDialog .expense-suboptions { margin-top:8px!important; }
+  #expenseDialog #newModifierOptions {
+    display:grid!important; grid-template-columns:repeat(6,max-content)!important;
+    gap:4px!important; justify-content:start;
+  }
+  .modal-actions { gap:8px!important; margin-top:8px!important; }
+  .modal-actions .button { height:48px; min-height:48px; padding:8px 16px!important; }
+  @media (max-width:680px) {
+    #expenseDialog .dialog-grid { grid-template-columns:minmax(0,1fr) max-content!important; }
+    #expenseDialog .dialog-grid .full-row { grid-column:1 / -1!important; }
+    #expenseDialog .dialog-grid .expense-final-field { padding-left:16px!important; }
+    #expenseDialog .dialog-inner > .toolbar.modal-actions { gap:8px!important; }
+  }
+</style>
+<style>
+  button { font-weight:500!important; }
+  .main-nav .nav-tab { font-weight:500!important; }
+  .chart-controls.is-stuck {
+    margin-left:-8px!important;
+    margin-right:-8px!important;
+    padding:8px!important;
+    background:var(--bg)!important;
+    border:1px solid var(--line)!important;
+    border-radius:0 0 8px 8px!important;
+    box-shadow:0 8px 18px #0003!important;
+  }
+  .todo-form textarea {
+    font:inherit!important;
+    font-family:'Figtree',Arial,sans-serif!important;
+    background:var(--soft)!important;
+    border:1px solid var(--line)!important;
+  }
+  .todo-form textarea::placeholder { font-family:'Figtree',Arial,sans-serif!important; }
+  @media (max-width:680px) {
+    .main-nav .nav-tab.active:before { left:0!important; right:0!important; }
+    .year-timeline {
+      margin-left:-32px!important;
+      margin-right:-32px!important;
+      padding-left:0!important;
+      padding-right:0!important;
+    }
+  }
+</style>
 </body></html>
