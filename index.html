@@ -531,4 +531,12 @@ const todayTodoRender=render;render=()=>{todayTodoRender();setupBackupTools();re
     .nav-tab .nav-icon, .nav-tab .nav-icon svg { width:22px; height:22px; }
   }
 </style>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistration().then(registration => {
+      if (registration) return registration.update();
+      return navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' });
+    });
+  }
+</script>
 </body></html>
