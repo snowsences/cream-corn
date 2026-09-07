@@ -1,1 +1,20 @@
-{"name":"Cream Corn","short_name":"Cream Corn","start_url":"./","display":"standalone","background_color":"#f5f7f6","theme_color":"#183c36"}
+{
+  "id": "./",
+  "name": "Cream Corn",
+  "short_name": "Cream Corn",
+  "description": "A private personal budget tracker.",
+  "lang": "en-US",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0a1e20",
+  "theme_color": "#0a1e20",
+  "icons": [
+    {
+      "src": "app-icon.png",
+      "sizes": "1000x1000",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
