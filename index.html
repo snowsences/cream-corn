@@ -810,4 +810,91 @@ const todayTodoRender=render;render=()=>{todayTodoRender();setupBackupTools();re
     #expenseEditDialog .dialog-inner > .toolbar.modal-actions { position:relative!important; bottom:auto!important; flex:none; width:calc(100% + 48px); margin:0 -24px!important; padding:16px 24px max(16px,env(safe-area-inset-bottom))!important; background:var(--surface); border-top:1px solid var(--line); }
   }
 </style>
+<style>
+  @media (max-width:680px) {
+    #expenseDialog .dialog-grid,
+    #expenseEditDialog .dialog-grid {
+      align-content:start!important;
+      align-items:start!important;
+      grid-auto-rows:max-content!important;
+    }
+    #expenseDialog .dialog-grid > *,
+    #expenseEditDialog .dialog-grid > * { align-self:start!important; }
+  }
+</style>
+<style>
+  .notes-dialog textarea {
+    background:var(--soft)!important;
+    color:var(--ink)!important;
+    border-color:var(--line)!important;
+  }
+  .notes-dialog textarea::placeholder { color:var(--muted)!important; }
+  .notes-dialog .toolbar {
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px!important;
+    width:100%;
+    margin-top:8px!important;
+  }
+  .notes-dialog .toolbar .button {
+    width:100%;
+    height:48px;
+    min-height:48px;
+    padding:8px 16px!important;
+  }
+</style>
+<script>
+  (() => {
+    const actionEditSvg = '<svg viewBox="0 0 21 21" aria-hidden="true"><path d="M20.2312.768845c-1.0252-1.025127-2.6872-1.025127-3.7123 0L15.3617 1.926 19.074 5.63831l1.1572-1.15715c1.0251-1.02513 1.0251-2.68719 0-3.712315Z" fill="currentColor"/><path d="m18.0134 6.69897-3.7124-3.71231L2.15021 15.1375c-.61679.6168-1.07018 1.3775-1.319198 2.2135l-.79978 2.6849c-.07862.2639-.00627.5497.188456.7444.19473.1948.48052.2671.74445.1885l2.68489-.7998c.83597-.249 1.59672-.7024 2.21351-1.3192L18.0134 6.69897Z" fill="currentColor"/></svg>';
+    const decorateEditIcons = () => document.querySelectorAll('.history-icon-button[data-edit-expense], .todo-edit').forEach(button => { button.innerHTML = actionEditSvg; });
+    const editedHistoryRender = renderHistory;
+    renderHistory = () => { editedHistoryRender(); decorateEditIcons(); };
+    const editedTodosRender = renderTodos;
+    renderTodos = () => { editedTodosRender(); decorateEditIcons(); };
+
+    categoryBarMonths = function () {
+      return chartMonths().map(month => {
+        const dining = round(data.entries
+          .filter(entry => entry.month === month.id && entry.category === 'Shopping' && entry.subcategory === 'Dining')
+          .reduce((sum, entry) => sum + num(entry.final), 0));
+        return {
+          ...month,
+          expenses: round(Math.max(0, num(data.settings.fixedExpenses) + num(data.settings.kevinMortgage) + num(month.water) + num(month.electricity) + num(month.gas) - num(month.cashOffset))),
+          groceries: num(month.groceries),
+          dining,
+          spendingOther: round(Math.max(0, num(month.spending) - dining))
+        };
+      });
+    };
+    const oneYearChartRender = renderCharts;
+    renderCharts = () => {
+      oneYearChartRender();
+      const tabs = document.querySelector('#chartArea .chart-tabs');
+      if (tabs && !tabs.querySelector('[data-chart-range="1"]')) {
+        const button = document.createElement('button');
+        button.dataset.chartRange = '1';
+        button.textContent = '1 yr';
+        tabs.prepend(button);
+      }
+      const oneYearButton = tabs?.querySelector('[data-chart-range="1"]');
+      if (oneYearButton) oneYearButton.classList.toggle('selected', chartRange === '1');
+      const subtitle = document.querySelector('#categoryBarsChart .chart-subtitle');
+      if (subtitle) subtitle.textContent = chartRange === 'all' ? 'All time' : `${chartRange} year${chartRange === '1' ? '' : 's'}`;
+    };
+    renderCharts();
+    renderHistory();
+    renderTodos();
+  })();
+</script>
+<style>
+  #chartArea > p.small { display:none!important; }
+  .history-icon-button,
+  .todo-edit { overflow:visible!important; background:transparent!important; border:0!important; }
+  .history-icon-button svg,
+  .todo-edit svg { display:block!important; width:21px!important; height:21px!important; overflow:visible!important; }
+  @media (max-width:680px) {
+    #todos .todo-form { grid-template-columns:minmax(0,1fr)!important; gap:8px!important; }
+    #todos .todo-form input[type="date"] { width:100%!important; }
+  }
+</style>
 </body></html>
