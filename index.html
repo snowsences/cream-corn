@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0a1e20"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="app-icon.png" type="image/png"><link rel="apple-touch-icon" href="app-icon.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <meta name="theme-color" content="#0a1e20"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="app-icon.png" type="image/png"><link rel="apple-touch-icon" href="app-icon.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
   <title>Cream Corn</title>
   <style>
     :root{--ink:#163b35;--bg:#f5f7f6;--line:#dbe5e1;--orange:#d96f49;--violet:#79598e;--green:#16816d}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#142724;font:15px/1.4 Arial,sans-serif}.app{max-width:1240px;margin:auto;padding:36px 24px 64px}header{display:flex;justify-content:space-between;gap:20px;align-items:center}h1,h2{letter-spacing:-.045em}h1{font-size:clamp(30px,5vw,46px);margin:0}h2{margin:0;font-size:21px}.eyebrow{font-size:11px;font-weight:bold;letter-spacing:.13em;color:#66827a;margin:0 0 5px}.button{border:0;background:var(--ink);color:#fff;font:inherit;font-weight:bold;padding:11px 15px;border-radius:9px;cursor:pointer}.button.primary{background:var(--orange);font-size:16px;padding:14px 19px}.button.ghost{background:#e8f0ed;color:var(--ink)}.notice{margin:17px 0 25px;color:#60746f;font-size:13px}.tabs{display:flex;gap:22px;border-bottom:1px solid var(--line);margin-bottom:22px}.tab{border:0;background:none;padding:0 1px 11px;color:#66827a;font:inherit;font-weight:bold;cursor:pointer}.tab.active{color:var(--ink);border-bottom:3px solid var(--orange)}.hidden{display:none!important}.toolbar{display:flex;gap:10px;align-items:center;margin-bottom:16px}.toolbar select,select,input{border:1px solid var(--line);background:#fff;border-radius:8px;padding:8px 10px;font:inherit;color:inherit}.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:13px}.metric,.panel{background:#fff;border:1px solid var(--line);border-radius:15px;padding:19px}.metric{border-top:4px solid var(--ink)}.metric.orange{border-top-color:var(--orange)}.metric.green{border-top-color:var(--green)}.metric.violet{border-top-color:var(--violet)}.metric p,.metric span{margin:0;color:#657c75;font-size:12px}.metric strong{display:block;font-size:25px;letter-spacing:-.05em;margin:6px 0}.grid{display:grid;grid-template-columns:1.05fr .95fr;gap:15px;margin-top:15px}.breakdown{display:flex;justify-content:space-between;border-bottom:1px solid #e4ece9;padding:11px 0}.breakdown:last-child{border:0}.breakdown b{font-size:14px}.year-note{margin-top:14px;padding:11px;background:#edf5f2;border-radius:8px;color:#54716a;font-size:12px}.entries{margin-top:12px}.entry{display:flex;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid #e4ece9}.entry small{display:block;color:#71867f}.table-wrap{overflow:auto;background:#fff;border:1px solid var(--line);border-radius:14px}.table{border-collapse:collapse;min-width:980px;width:100%;font-size:13px}.table th,.table td{padding:10px;border-bottom:1px solid #e4ece9;text-align:right}.table th:first-child{text-align:left}.table thead{background:#edf3f1;color:#56706a}.table input{width:85px;padding:5px;text-align:right;border-color:#dce6e2}.megan{color:#765190;font-weight:bold}.saved{color:var(--green);font-weight:bold}.settings{max-width:620px}.settings label,.dialog-grid label{display:grid;gap:5px;margin-top:13px;font-size:13px;font-weight:bold}.settings input{width:100%}.small{color:#657c75;font-size:12px}dialog{border:0;border-radius:16px;padding:0;max-width:510px;width:calc(100% - 28px);box-shadow:0 18px 50px #0004}dialog::backdrop{background:#183c3688}.dialog-inner{padding:24px}.dialog-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.dialog-grid label:first-child{grid-column:1/-1}.dialog-grid input,.dialog-grid select{width:100%}.final{display:flex;justify-content:space-between;border-block:1px solid var(--line);padding:14px 0;margin:18px 0}@media(max-width:780px){.metrics{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr}header{align-items:flex-start;flex-direction:column}}@media(max-width:450px){.app{padding:24px 14px}.dialog-grid{grid-template-columns:1fr}.dialog-grid label:first-child{grid-column:auto}}
@@ -72,14 +72,24 @@
   .choice-option.selected{color:#fff!important}.history-filter{margin:0 0 10px;width:min(360px,100%);height:40px}.history-entry{position:relative}.history-actions{display:flex;gap:6px;grid-column:1/-1;margin-top:1px}.history-actions button{border:1px solid var(--line);border-radius:7px;background:var(--soft);color:var(--muted);font:12px/1 'Figtree',sans-serif;padding:6px 8px;cursor:pointer}.history-actions button:hover{border-color:var(--orange);color:var(--ink)}.history-actions .history-delete:hover{border-color:#e66b68;color:#e66b68}.expense-edit-dialog{background:var(--surface);color:var(--ink);width:min(560px,calc(100vw - 32px));border:0;border-radius:16px;padding:0;box-shadow:0 18px 50px #0005}.expense-edit-dialog .dialog-inner{padding:24px}.expense-edit-dialog h2{padding-right:42px}.expense-edit-dialog .dialog-grid textarea{min-height:90px}.expense-edit-dialog::backdrop,.megan-reminder-dialog::backdrop{background:rgba(0,0,0,.5)}.megan-reminder-dialog{background:var(--surface);color:var(--ink);width:min(440px,calc(100vw - 32px));border:0;border-radius:16px;padding:0;box-shadow:0 18px 50px #0005}.megan-reminder-dialog .dialog-inner{padding:24px}.megan-reminder-dialog h2{padding-right:42px}.megan-reminder-dialog p{margin:10px 0 0}.backup-section{margin-top:24px;padding-top:20px;border-top:1px solid var(--line)}.backup-section h2{margin:0}.backup-section .toolbar{margin:12px 0 0;flex-wrap:wrap}.backup-section .small{margin:7px 0 0}@media(max-width:680px){.expense-edit-dialog,.megan-reminder-dialog{width:calc(100vw - 24px)}.expense-edit-dialog .dialog-inner,.megan-reminder-dialog .dialog-inner{padding:20px 16px}}
 </style>
 <style>
-  .todo-done summary:after{display:none}.todo-done-chevron{width:22px;height:22px;fill:none;stroke:var(--muted);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;transition:transform .16s}.todo-done[open] .todo-done-chevron{transform:rotate(90deg)}.todo-check-icon{display:none;width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:2.7;stroke-linecap:round;stroke-linejoin:round}.todo-check input:checked+span{color:#f4fbf8!important}.todo-check input:checked+span .todo-check-icon{display:block}
+  .todo-done summary:after{display:none}.todo-done-chevron{width:22px;height:22px;fill:none;stroke:var(--muted);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;transition:transform .16s}.todo-done[open] .todo-done-chevron{transform:rotate(90deg)}.todo-check-icon{display:none;width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:2.7;stroke-linecap:round;stroke-linejoin:round}.todo-check input:checked+span{color:#f4fbf8!important}.todo-check input:checked+span .todo-check-icon{display:block}#todoEditDialog textarea,#todoEditDialog input{background:#fffdf8!important;color:#10272b!important;border-color:#c8d9d7!important;color-scheme:light}#todoEditDialog textarea::placeholder{color:#5d7575}.history-list{gap:8px}.history-entry{grid-template-columns:minmax(130px,1.15fr) minmax(120px,1fr) minmax(106px,.78fr) auto auto!important;gap:16px!important;align-items:center!important;padding:12px 16px!important}.history-entry span{gap:1px}.history-entry small{display:none}.history-entry b{font-size:16px!important;line-height:1.15}.history-entry .history-date b,.history-entry .history-kind b{display:block}.history-entry .history-date time,.history-entry .history-kind span{display:block;margin-top:4px;color:var(--muted);font-size:14px;line-height:1.1}.history-entry .history-final{color:var(--green);font-size:35px!important;font-weight:800;letter-spacing:-.055em;white-space:nowrap}.history-entry .history-actions{grid-column:auto!important;margin:0!important;gap:8px}.history-icon-button{display:grid;place-items:center;width:38px;height:38px;padding:0!important;border:0!important;background:transparent!important;color:var(--muted)!important;cursor:pointer}.history-icon-button svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}.history-icon-button:hover,.history-icon-button:focus-visible{color:var(--ink)!important;outline:2px solid var(--orange);outline-offset:2px}.history-icon-button.history-delete:hover{color:#e66b68!important}@media(max-width:680px){.history-entry{grid-template-columns:minmax(94px,1fr) minmax(78px,.84fr) minmax(75px,.78fr) 34px 34px!important;gap:6px!important;padding:10px 10px!important}.history-entry b{font-size:14px!important}.history-entry .history-date time,.history-entry .history-kind span{font-size:12px}.history-entry .history-final{font-size:25px!important}.history-icon-button{width:34px;height:34px}.history-icon-button svg{width:22px;height:22px}}
 </style>
+<style>.history-entry{grid-template-columns:minmax(130px,1.15fr) minmax(120px,1fr) minmax(106px,.78fr) auto!important}@media(max-width:680px){.history-entry{grid-template-columns:minmax(94px,1fr) minmax(78px,.84fr) minmax(75px,.78fr) auto!important}}</style>
+<style>
+  .nav-tab,.chart-tabs button.selected,.bill-tabs button.selected,.todo-check span,.todo-date-group h3,.income-level-head,.todo-edit-dialog label,.history-entry .history-final{font-weight:700!important}.metric strong,.todo-check span{font-size:20px!important}.history-filter{display:block;width:100%!important;max-width:none!important}.chart-controls.is-stuck{margin-left:0!important;margin-right:0!important;padding-left:0!important;padding-right:0!important}@media(max-width:680px){.header-actions{padding-left:24px!important;padding-right:24px!important}#expenseDialog .dialog-inner{padding-left:24px!important;padding-right:24px!important}#expenseDialog .dialog-inner>.toolbar:last-child{margin-left:-24px!important;margin-right:-24px!important;padding-left:24px!important;padding-right:24px!important}.notes-dialog,.todo-edit-dialog{width:calc(100vw - 48px)!important}.history-entry .history-final{font-size:20px!important}}@media(max-width:450px){.app{padding-left:24px!important;padding-right:24px!important}}
+</style>
+<style>.history-entry .history-comment{grid-column:1/-1!important;margin:8px 0!important;color:var(--ink)!important;font-size:14px!important;line-height:1.35;white-space:pre-wrap;overflow-wrap:anywhere}</style>
+<style>
+  :root{--space-1:4px;--space-2:8px;--space-3:16px;--space-4:32px}.app{padding:32px!important}.top-header{padding-bottom:16px!important}.toolbar{gap:8px!important}.metrics,.grid,.chart-grid,.dialog-grid{gap:16px!important}.metric,.panel,.chart-card{padding:16px!important}.chart-card{min-height:0!important}.table th,.table td{padding:8px!important}.button{padding:8px 16px!important}.button.primary{padding:16px!important}.toolbar select,select,input{padding:8px!important}.todo-form{gap:8px!important;margin-bottom:32px!important}.todo-form textarea{padding:8px!important}.todo-form .button{padding:8px!important}.todo-list{gap:32px!important}.todo-group .todo-stack,.history-list{gap:8px!important}.todo-card{padding:8px!important}.history-entry{padding:8px 16px!important}.history-entry .history-comment{margin:8px 0!important}.dialog-inner,.notes-dialog .dialog-inner,.todo-edit-dialog .dialog-inner,.expense-edit-dialog .dialog-inner,.megan-reminder-dialog .dialog-inner{padding:32px!important}.install-banner{width:min(calc(100% - 64px),520px)!important;padding:8px 16px!important}.metric,.panel,.table-wrap,.year-table,.chart-card,.history-entry,.todo-card,.todo-form textarea,.todo-form input,.todo-form .button,.notes-button,.todo-edit,.choice-option,.year-timeline button,.install-banner,dialog,.notes-dialog,.todo-edit-dialog,.expense-edit-dialog,.megan-reminder-dialog{border-radius:8px!important}.todo-done-actions{display:flex;align-items:center;gap:8px}.todo-clear-done{border:0;background:transparent;color:var(--muted);padding:4px!important;font:inherit;font-size:14px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}.todo-clear-done:hover,.todo-clear-done:focus-visible{color:var(--ink);outline:2px solid var(--orange);outline-offset:2px;border-radius:4px}.monthly-table input[type=number]{appearance:textfield;-moz-appearance:textfield}.monthly-table input[type=number]::-webkit-inner-spin-button,.monthly-table input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}@media(max-width:680px){.app{padding:32px 32px 160px!important}.header-actions{padding-left:32px!important;padding-right:32px!important}#expenseDialog .dialog-inner{padding:32px 32px 128px!important}#expenseDialog .dialog-inner>.toolbar:last-child{bottom:-32px!important;margin:-0px -32px -32px!important;padding:16px 32px!important}.notes-dialog,.todo-edit-dialog,.expense-edit-dialog,.megan-reminder-dialog{width:calc(100vw - 64px)!important}.notes-dialog .dialog-inner,.todo-edit-dialog .dialog-inner,.expense-edit-dialog .dialog-inner,.megan-reminder-dialog .dialog-inner{padding:32px!important}.todo-card{padding:8px!important}}
+</style>
+<style>@media(max-width:680px){#expenseDialog .dialog-inner>.toolbar:last-child{margin:16px -32px -32px!important}}</style>
+<style>.utility-alert{margin:0 0 16px;padding:8px 16px;border:1px solid #dca62f;border-radius:8px;background:color-mix(in srgb,#dca62f 20%,var(--surface));color:var(--ink);font-size:16px;font-weight:700;line-height:1.4}.monthly-table th:nth-child(4),.monthly-table td:nth-child(4),.monthly-table th:nth-child(5),.monthly-table td:nth-child(5),.monthly-table th:nth-child(6),.monthly-table td:nth-child(6),.monthly-table th:nth-child(7),.monthly-table td:nth-child(7){width:96px!important}.monthly-table th:nth-child(8),.monthly-table td:nth-child(8){text-align:center!important}.monthly-table td.utility-missing{background:color-mix(in srgb,#dca62f 18%,transparent)!important}.monthly-table td.utility-missing input{border-color:#dca62f!important;box-shadow:0 0 0 1px #dca62f55}@media(max-width:680px){.utility-alert{padding:8px 16px;margin-bottom:16px;font-size:14px}}</style>
 </head>
 <body><main class="app">
   <aside id="installBanner" class="install-banner hidden" aria-label="Install Cream Corn"><span>Install Cream Corn for faster access.</span><div><button class="button primary" id="installApp">Install</button><button class="install-dismiss" id="dismissInstall" aria-label="Dismiss install prompt">×</button></div></aside>
   <header class="top-header"><div><h1>Budget</h1></div><nav class="main-nav"><button class="nav-tab tab active" data-tab="overview"><span class="nav-icon">⌂</span><span>Overview</span></button><button class="nav-tab tab" data-tab="months"><span class="nav-icon">▦</span><span>Months</span></button><button class="nav-tab tab" data-tab="history"><span class="nav-icon">☷</span><span>History</span></button><button class="nav-tab tab" data-tab="todos"><span class="nav-icon">✓</span><span>To-Dos</span></button><button class="nav-tab tab" data-tab="settings"><span class="nav-icon">⚙</span><span>Settings</span></button></nav><div class="header-actions"><button class="hidden" id="themeToggle">Light mode</button><button class="button primary" id="addExpense">+ Add expense</button></div></header>
   <p class="notice hidden" id="notice" aria-live="polite"></p>
-  <section id="overview"><select class="hidden" id="monthPicker"></select><div class="metrics overview-metrics" id="metrics"></div><section class="charts" id="chartArea"></section></section>
+  <section id="overview"><select class="hidden" id="monthPicker"></select><aside id="utilityAlert" class="utility-alert hidden" role="status" aria-live="polite"></aside><div class="metrics overview-metrics" id="metrics"></div><section class="charts" id="chartArea"></section></section>
   <section id="months" class="hidden"><div class="year-timeline" id="yearTimeline"></div><div class="year-table" id="monthlyYearTable"></div></section>
   <section id="history" class="hidden"><div class="history-head"><h2>Expense history</h2><span id="historyCount"></span></div><div class="history-list" id="historyEntries"></div></section><section id="todos" class="hidden"><div class="todo-head"><h2>To-Dos</h2></div><form id="todoForm" class="todo-form"><textarea id="todoText" maxlength="500" placeholder="What needs doing?" aria-label="To-do" required></textarea><input id="todoDate" type="date" aria-label="Due date" required><button class="button primary" type="submit">Add to-do</button></form><div id="todoEntries" class="todo-list"></div></section>
   <section id="settings" class="hidden"><div class="grid"><article class="panel settings"><p class="eyebrow">STATIC VALUES</p><h2>Budget settings</h2><p class="small">These values sync privately between your signed-in devices.</p><label>Monthly income<input type="number" data-setting="monthlyIncome"></label><label>Fixed monthly expenses<input type="number" data-setting="fixedExpenses"></label><label>Kevin mortgage<input type="number" data-setting="kevinMortgage"></label><label>Kevin grocery share (%)<input type="number" step="0.1" data-setting="foodShare"></label><label>R value 1 for Megan<input type="number" data-setting="meganR1"></label><label>R value 2 for Megan<input type="number" data-setting="meganR2"></label><p class="small">Megan owes = her grocery share + these two R values.</p></article><article class="panel settings"><p class="eyebrow">FIREBASE SYNC</p><h2>Your private budget</h2><p class="small">Sign in with the same Google account on each device. Your budget stays private and syncs automatically.</p><div class="toolbar" style="margin-top:18px"><button class="button" id="firebaseSignIn">Sign in with Google</button><button class="button ghost" id="firebaseSignOut">Sign out</button></div><p class="small" id="firebaseStatus" style="margin-top:14px">Connecting to Firebase…</p></article></div></section>
@@ -157,7 +167,7 @@ function chartSvg(points,color){if(!points.length)return '<div class="chart-empt
 function renderTodos(){const list=document.getElementById('todoEntries');if(!list)return;const ordered=items=>[...items].sort((a,b)=>String(b.date).localeCompare(String(a.date))||String(b.createdAt).localeCompare(String(a.createdAt))),active=ordered(data.todos.filter(todo=>!todo.done)),done=ordered(data.todos.filter(todo=>todo.done)),card=todo=>`<article class="todo-card ${todo.done?'done':''}"><label class="todo-check" aria-label="Mark ${escapeTodo(todo.text)} ${todo.done?'active':'done'}"><input type="checkbox" data-todo-check="${todo.id}" ${todo.done?'checked':''}><span aria-hidden="true">✓</span></label><div class="todo-copy"><p>${escapeTodo(todo.text)}</p><time datetime="${todo.date}">${displayTodoDate(todo.date)}</time></div></article>`,empty='<div class="chart-empty">Nothing here yet.</div>';list.innerHTML=`<section class="todo-group"><h2>Active</h2><div class="todo-stack">${active.length?active.map(card).join(''):empty}</div></section><details class="todo-group todo-done"><summary><h2>Done</h2></summary><div class="todo-stack">${done.length?done.map(card).join(''):empty}</div></details>`}
 function renderTodos(){const list=document.getElementById('todoEntries');if(!list)return;const card=todo=>`<article class="todo-card ${todo.done?'done':''}"><label class="todo-check" aria-label="Mark ${escapeTodo(todo.text)} ${todo.done?'active':'done'}"><input type="checkbox" data-todo-check="${todo.id}" ${todo.done?'checked':''}><span aria-hidden="true">✓</span></label><div class="todo-copy"><p>${escapeTodo(todo.text)}</p></div></article>`,active=data.todos.filter(todo=>!todo.done),dates=[...new Set(active.map(todo=>todo.date))].sort((a,b)=>b.localeCompare(a)),activeGroups=dates.map(date=>{const items=active.filter(todo=>todo.date===date).sort((a,b)=>a.text.localeCompare(b.text,undefined,{sensitivity:'base'}));return `<section class="todo-date-group"><h3>${displayTodoDate(date)}</h3><div class="todo-stack">${items.map(card).join('')}</div></section>`}).join(''),done=[...data.todos.filter(todo=>todo.done)].sort((a,b)=>String(b.date).localeCompare(String(a.date))||a.text.localeCompare(b.text,undefined,{sensitivity:'base'})),empty='<div class="chart-empty">Nothing here yet.</div>';list.innerHTML=`<section class="todo-group"><h2>Active</h2>${activeGroups||empty}</section><details class="todo-group todo-done"><summary><h2>Done</h2></summary><div class="todo-stack">${done.length?done.map(card).join(''):empty}</div></details>`}
 function savedTone(value){return value>4000?'saved-high':value>=2500?'saved-mid':value>0?'saved-low':'saved-negative'}
-function monthTable(months){return `<div class="table-wrap"><table class="table monthly-table"><thead><tr><th>Month</th><th>Saved</th><th>Spending</th><th>Food</th><th>Water</th><th>Electricity</th><th>Gas</th><th>Megan owes</th><th aria-label="Actions"></th></tr></thead><tbody>${months.map(month=>{const values=total(month),label=`${monthLabels[Number(month.id.slice(5,7))-1].slice(0,3)} '${month.id.slice(2,4)}`;return `<tr><th>${label}</th><td class="saved ${savedTone(values.saved)}">${money(values.saved)}</td><td><div class="spending-cell"><input type="number" data-month="${month.id}" data-key="spending" value="${round(month.spending)}"><button class="notes-button ${month.notes?'has-notes':''}" data-notes-month="${month.id}" aria-label="Edit notes for ${month.label}" title="${month.notes?'Edit notes':'Add notes'}">▤</button></div></td><td><input type="number" data-month="${month.id}" data-key="groceries" value="${round(month.groceries)}"></td>${['water','electricity','gas'].map(key=>`<td><input type="number" data-month="${month.id}" data-key="${key}" value="${round(month[key])}"></td>`).join('')}<td class="megan">${money(values.megan)}</td><td class="actions"><details><summary aria-label="More actions">•••</summary><div class="action-menu"><button data-offset-month="${month.id}">Add cash offset</button></div></details></td></tr>`}).join('')}</tbody></table></div>`}
+function monthTable(months){return `<div class="table-wrap"><table class="table monthly-table"><thead><tr><th>Month</th><th>Saved</th><th>Spending</th><th>Food</th><th>Water</th><th>Electricity</th><th>Gas</th><th>Megan owes</th><th aria-label="Actions"></th></tr></thead><tbody>${months.map(month=>{const values=total(month),label=`${monthLabels[Number(month.id.slice(5,7))-1].slice(0,3)} '${month.id.slice(2,4)}`;return `<tr><th>${label}</th><td class="saved ${savedTone(values.saved)}">${money(values.saved)}</td><td><div class="spending-cell"><input type="number" data-month="${month.id}" data-key="spending" value="${round(month.spending)}"><button class="notes-button ${month.notes?'has-notes':''}" data-notes-month="${month.id}" aria-label="Edit notes for ${month.label}" title="${month.notes?'Edit notes':'Add notes'}">▤</button></div></td><td><input type="number" data-month="${month.id}" data-key="groceries" value="${round(month.groceries)}"></td>${['water','electricity','gas'].map(key=>`<td class="${utilityValueMissing(month,key)?'utility-missing':''}"><input type="number" data-month="${month.id}" data-key="${key}" value="${round(month[key])}"></td>`).join('')}<td class="megan">${money(values.megan)}</td><td class="actions"><details><summary aria-label="More actions">•••</summary><div class="action-menu"><button data-offset-month="${month.id}">Add cash offset</button></div></details></td></tr>`}).join('')}</tbody></table></div>`}
 function autoGrowTodo(){todoText.style.height='50px';todoText.style.height=`${Math.max(50,Math.min(250,todoText.scrollHeight))}px`}todoText.addEventListener('input',autoGrowTodo);todoForm.onsubmit=event=>{event.preventDefault();const text=todoText.value.trim().slice(0,500),date=todoDate.value;if(!text||!date)return;const todo={id:crypto.randomUUID(),text,date,done:false,createdAt:new Date().toISOString()};data.todos.unshift(todo);save();syncTodo(todo);todoForm.reset();todoDate.value=new Date().toISOString().slice(0,10);autoGrowTodo();render()};
 const chartTooltip=document.createElement('div');chartTooltip.className='chart-tooltip';document.body.append(chartTooltip);function hideChartTooltip(){chartTooltip.classList.remove('visible')}function showChartTooltip(point,event){chartTooltip.innerHTML=`<b>${point.dataset.chartLabel}</b><span>${point.dataset.chartValue}</span><span>3-month average: ${point.dataset.chartAverage}</span>`;const gap=14,width=chartTooltip.offsetWidth,height=chartTooltip.offsetHeight,left=Math.min(window.innerWidth-width-10,Math.max(10,event.clientX+gap)),top=Math.min(window.innerHeight-height-10,Math.max(10,event.clientY-height-gap));chartTooltip.style.left=`${left}px`;chartTooltip.style.top=`${top}px`;chartTooltip.classList.add('visible')}document.addEventListener('pointermove',event=>{const point=event.target.closest?.('.chart-point');if(point)showChartTooltip(point,event);else hideChartTooltip()});document.addEventListener('pointerleave',hideChartTooltip);document.querySelectorAll('.tab').forEach(button=>button.onclick=()=>{document.querySelectorAll('.tab').forEach(item=>item.classList.remove('active'));document.querySelectorAll('.app > section').forEach(item=>item.classList.add('hidden'));button.classList.add('active');document.getElementById(button.dataset.tab).classList.remove('hidden');if(button.dataset.tab==='overview')renderCharts();if(button.dataset.tab==='todos')renderTodos()});
 function renderMonthlyTimeline(){const timeline=document.getElementById('yearTimeline'),today=new Date(),thisYear=today.getFullYear(),years=[...new Set(data.months.map(month=>month.id.slice(0,4)))].sort((a,b)=>Number(b)-Number(a));if(!timeline)return;timeline.innerHTML=years.map(year=>{const yearNumber=Number(year),months=data.months.filter(month=>month.id.startsWith(year)),included=yearNumber===thisYear?months.filter(month=>Number(month.id.slice(5,7))<today.getMonth()+1):months,totalSaved=Math.round(included.reduce((sum,month)=>sum+total(month).saved,0)),subline=yearNumber>thisYear?'':`${yearNumber===thisYear?'Saved so far':'Total saved'} ${money(totalSaved)}`;return `<button class="${year===selectedYear?'selected':''}" data-year-tab="${year}"><strong>${year}</strong>${subline?`<span>${subline}</span>`:''}</button>`}).join('')}
@@ -183,14 +193,14 @@ const todayTodoBanner=document.createElement('aside');todayTodoBanner.id='todayT
 function localDateKey(date=new Date()){return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`}function renderTodayTodoBanner(){const today=localDateKey(),todos=data.todos.filter(todo=>!todo.done&&todo.date===today);todayTodoBanner.classList.toggle('hidden',!todos.length);if(!todos.length)return;todayTodoBanner.innerHTML='<span class="today-icon" aria-hidden="true">i</span>';todayTodoBanner.append(document.createTextNode(todos.length===1?`You have a to-do today: ${todos[0].text}`:`You have ${todos.length} to-dos today.`))}
 const todoEditDialog=document.createElement('dialog');todoEditDialog.id='todoEditDialog';todoEditDialog.className='todo-edit-dialog';todoEditDialog.innerHTML='<form method="dialog" class="dialog-inner" id="todoEditForm"><button type="button" class="dialog-close" id="closeTodoEdit" aria-label="Close to-do editor">×</button><h2>Edit to-do</h2><label>Description<textarea id="todoEditText" maxlength="500" required></textarea></label><label>Date<input id="todoEditDate" type="date" required></label><div class="toolbar modal-actions"><button type="button" class="button ghost" id="cancelTodoEdit">Cancel</button><button type="submit" class="button primary">Save</button></div></form>';document.body.append(todoEditDialog);let editingTodoId='';const todoEditText=document.getElementById('todoEditText'),todoEditDate=document.getElementById('todoEditDate');function openTodoEdit(id){const todo=data.todos.find(item=>item.id===id);if(!todo)return;editingTodoId=id;todoEditText.value=todo.text;todoEditDate.value=todo.date;todoEditDialog.showModal();todoEditText.focus()}document.addEventListener('click',event=>{const button=event.target.closest('[data-edit-todo]');if(button)openTodoEdit(button.dataset.editTodo)});document.getElementById('closeTodoEdit').onclick=()=>todoEditDialog.close();document.getElementById('cancelTodoEdit').onclick=()=>todoEditDialog.close();todoEditDialog.addEventListener('click',event=>{if(event.target===todoEditDialog)todoEditDialog.close()});document.getElementById('todoEditForm').addEventListener('submit',event=>{event.preventDefault();const todo=data.todos.find(item=>item.id===editingTodoId),text=todoEditText.value.trim().slice(0,500),date=todoEditDate.value;if(!todo||!text||!date)return;todo.text=text;todo.date=date;todo.updatedAt=new Date().toISOString();save();syncTodo(todo);todoEditDialog.close();render()});
 function renderTodos(){const list=document.getElementById('todoEntries');if(!list)return;const card=todo=>`<article class="todo-card ${todo.done?'done':''}"><label class="todo-check" aria-label="Mark ${escapeTodo(todo.text)} ${todo.done?'active':'done'}"><input type="checkbox" data-todo-check="${todo.id}" ${todo.done?'checked':''}><span aria-hidden="true">✓</span></label><div class="todo-copy"><p>${escapeTodo(todo.text)}</p></div><button type="button" class="todo-edit" data-edit-todo="${todo.id}" aria-label="Edit ${escapeTodo(todo.text)}">✎</button></article>`,active=data.todos.filter(todo=>!todo.done),dates=[...new Set(active.map(todo=>todo.date))].sort((a,b)=>b.localeCompare(a)),activeGroups=dates.map(date=>{const items=active.filter(todo=>todo.date===date).sort((a,b)=>a.text.localeCompare(b.text,undefined,{sensitivity:'base'}));return `<section class="todo-date-group"><h3>${displayTodoDate(date)}</h3><div class="todo-stack">${items.map(card).join('')}</div></section>`}).join(''),done=[...data.todos.filter(todo=>todo.done)].sort((a,b)=>String(b.date).localeCompare(String(a.date))||a.text.localeCompare(b.text,undefined,{sensitivity:'base'})),empty='<div class="chart-empty">Nothing here yet.</div>';list.innerHTML=`<section class="todo-group"><h2>Active</h2>${activeGroups||empty}</section><details class="todo-group todo-done"><summary><h2>Done</h2></summary><div class="todo-stack">${done.length?done.map(card).join(''):empty}</div></details>`}
-function renderTodos(){const list=document.getElementById('todoEntries');if(!list)return;const checkIcon='<svg class="todo-check-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5 9.4 17 19 7"/></svg>',chevron='<svg class="todo-done-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>',card=todo=>`<article class="todo-card ${todo.done?'done':''}"><label class="todo-check" aria-label="Mark ${escapeTodo(todo.text)} ${todo.done?'active':'done'}"><input type="checkbox" data-todo-check="${todo.id}" ${todo.done?'checked':''}><span aria-hidden="true">${checkIcon}</span></label><div class="todo-copy"><p>${escapeTodo(todo.text)}</p></div><button type="button" class="todo-edit" data-edit-todo="${todo.id}" aria-label="Edit ${escapeTodo(todo.text)}">✎</button></article>`,active=data.todos.filter(todo=>!todo.done),dates=[...new Set(active.map(todo=>todo.date))].sort((a,b)=>b.localeCompare(a)),activeGroups=dates.map(date=>{const items=active.filter(todo=>todo.date===date).sort((a,b)=>a.text.localeCompare(b.text,undefined,{sensitivity:'base'}));return `<section class="todo-date-group"><h3>${displayTodoDate(date)}</h3><div class="todo-stack">${items.map(card).join('')}</div></section>`}).join(''),done=[...data.todos.filter(todo=>todo.done)].sort((a,b)=>String(b.date).localeCompare(String(a.date))||a.text.localeCompare(b.text,undefined,{sensitivity:'base'})),empty='<div class="chart-empty">Nothing here yet.</div>';list.innerHTML=`<section class="todo-group"><h2>Active</h2>${activeGroups||empty}</section><details class="todo-group todo-done"><summary><h2>Done</h2>${chevron}</summary><div class="todo-stack">${done.length?done.map(card).join(''):empty}</div></details>`}
-todoDate.value=localDateKey();todoForm.onsubmit=event=>{event.preventDefault();const text=todoText.value.trim().slice(0,500),date=todoDate.value;if(!text||!date)return;const todo={id:crypto.randomUUID(),text,date,done:false,createdAt:new Date().toISOString()};data.todos.unshift(todo);save();syncTodo(todo);todoForm.reset();todoDate.value=localDateKey();autoGrowTodo();render()};
+function renderTodos(){const list=document.getElementById('todoEntries');if(!list)return;const checkIcon='<svg class="todo-check-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5 9.4 17 19 7"/></svg>',chevron='<svg class="todo-done-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>',card=todo=>`<article class="todo-card ${todo.done?'done':''}"><label class="todo-check" aria-label="Mark ${escapeTodo(todo.text)} ${todo.done?'active':'done'}"><input type="checkbox" data-todo-check="${todo.id}" ${todo.done?'checked':''}><span aria-hidden="true">${checkIcon}</span></label><div class="todo-copy"><p>${escapeTodo(todo.text)}</p></div><button type="button" class="todo-edit" data-edit-todo="${todo.id}" aria-label="Edit ${escapeTodo(todo.text)}">✎</button></article>`,active=data.todos.filter(todo=>!todo.done),dates=[...new Set(active.map(todo=>todo.date))].sort((a,b)=>b.localeCompare(a)),activeGroups=dates.map(date=>{const items=active.filter(todo=>todo.date===date).sort((a,b)=>a.text.localeCompare(b.text,undefined,{sensitivity:'base'}));return `<section class="todo-date-group"><h3>${displayTodoDate(date)}</h3><div class="todo-stack">${items.map(card).join('')}</div></section>`}).join(''),done=[...data.todos.filter(todo=>todo.done)].sort((a,b)=>String(b.date).localeCompare(String(a.date))||a.text.localeCompare(b.text,undefined,{sensitivity:'base'})),empty='<div class="chart-empty">Nothing here yet.</div>';list.innerHTML=`<section class="todo-group"><h2>Active</h2>${activeGroups||empty}</section><details class="todo-group todo-done"><summary><h2>Done</h2><span class="todo-done-actions">${done.length?'<button type="button" class="todo-clear-done" data-clear-done>Clear All</button>':''}${chevron}</span></summary><div class="todo-stack">${done.length?done.map(card).join(''):empty}</div></details>`}
+todoDate.value=localDateKey();todoForm.onsubmit=event=>{event.preventDefault();const text=todoText.value.trim().slice(0,500),date=todoDate.value;if(!text||!date)return;const todo={id:crypto.randomUUID(),text,date,done:false,createdAt:new Date().toISOString()};data.todos.unshift(todo);save();syncTodo(todo);todoForm.reset();todoDate.value=localDateKey();autoGrowTodo();render()};async function deleteCloudTodo(id){if(!firebaseClient||!firebaseUser)return;try{await firebaseClient.deleteDoc(firebaseClient.doc(firebaseClient.db,...firebasePath('todos'),id))}catch(error){console.error(error);firebaseStatusMessage('Could not remove this to-do from sync yet.')}}document.addEventListener('click',event=>{const button=event.target.closest('[data-clear-done]');if(!button)return;event.preventDefault();event.stopPropagation();const done=data.todos.filter(todo=>todo.done);if(!done.length||!confirm(`Permanently remove ${done.length} completed to-do${done.length===1?'':'s'}?`))return;data.todos=data.todos.filter(todo=>!todo.done);save();done.forEach(todo=>deleteCloudTodo(todo.id));render()});
 function setupHistoryFilter(){const history=document.getElementById('history'),entries=document.getElementById('historyEntries');if(!history||document.getElementById('historyFilter'))return;const input=document.createElement('input');input.id='historyFilter';input.className='history-filter';input.type='search';input.placeholder='Filter comments';input.setAttribute('aria-label','Filter expense comments');input.addEventListener('input',()=>{historyFilter=input.value.trim().toLowerCase();renderHistory()});history.insertBefore(input,entries)}
-function renderHistory(){setupHistoryFilter();const sorted=[...data.entries].filter(entry=>!historyFilter||String(entry.comment||'').toLowerCase().includes(historyFilter)).sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));historyCount.textContent=`${sorted.length} expense${sorted.length===1?'':'s'}`;historyEntries.innerHTML=sorted.length?sorted.map(entry=>{const label=data.months.find(month=>month.id===entry.month)?.label||entry.month;return `<article class="history-entry"><span><small>Date</small><b>${new Date(entry.createdAt).toLocaleString()}</b></span><span><small>Month · Type</small><b>${label} · ${entry.type}</b></span><span><small>Amount · modifier · final</small><b>${money(entry.original)} × ${round(entry.modifier).toFixed(2)} = ${money(entry.final)}</b></span>${entry.comment?`<span class="history-comment">${entry.comment}</span>`:''}<div class="history-actions"><button type="button" data-edit-expense="${entry.id}">Edit</button><button type="button" class="history-delete" data-delete-expense="${entry.id}">Delete</button></div></article>`}).join(''):'<div class="chart-empty">No matching expenses.</div>'}
+function renderHistory(){setupHistoryFilter();const sorted=[...data.entries].filter(entry=>!historyFilter||String(entry.comment||'').toLowerCase().includes(historyFilter)).sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));historyCount.textContent=`${sorted.length} expense${sorted.length===1?'':'s'}`;historyEntries.innerHTML=sorted.length?sorted.map(entry=>{const created=new Date(entry.createdAt),label=data.months.find(month=>month.id===entry.month)?.label||entry.month,date=created.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),time=created.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}),editIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 20 4.2-1 10.4-10.4a2.1 2.1 0 0 0-3-3L5.2 16 4 20Z"/><path d="m13.9 7.2 3 3"/></svg>',deleteIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6m4-6v6M9 7l.7-3h4.6L15 7m-8 0 1 13h8l1-13"/></svg>';return `<article class="history-entry"><span class="history-date"><b>${date}</b><time datetime="${created.toISOString()}">${time}</time></span><span class="history-kind"><b>${entry.type}</b><span>${label}</span></span><b class="history-final">${money(entry.final)}</b><div class="history-actions"><button type="button" class="history-icon-button" data-edit-expense="${entry.id}" aria-label="Edit expense">${editIcon}</button><button type="button" class="history-icon-button history-delete" data-delete-expense="${entry.id}" aria-label="Delete expense">${deleteIcon}</button></div>${entry.comment?`<p class="history-comment">${escapeTodo(entry.comment)}</p>`:''}</article>`}).join(''):'<div class="chart-empty">No matching expenses.</div>'}
 const expenseEditDialog=document.createElement('dialog');expenseEditDialog.id='expenseEditDialog';expenseEditDialog.className='expense-edit-dialog';expenseEditDialog.innerHTML='<form class="dialog-inner" id="expenseEditForm"><button type="button" class="dialog-close" id="closeExpenseEdit" aria-label="Close expense editor">×</button><h2>Edit expense</h2><div class="dialog-grid"><label>Amount<input id="expenseEditAmount" type="number" inputmode="decimal" required></label><label>Modifier<input id="expenseEditModifier" type="number" min="0.90" max="1" step="0.01" required></label><label>Type<select id="expenseEditType"><option>Spending</option><option>Water</option><option>Electricity</option><option>Gas</option><option>Groceries</option></select></label><label>Month<select id="expenseEditMonth"></select></label><label class="full-row">Comment<textarea id="expenseEditComment" maxlength="500"></textarea></label></div><div class="toolbar modal-actions"><button type="button" class="button ghost" id="cancelExpenseEdit">Cancel</button><button type="submit" class="button primary">Save</button></div></form>';document.body.append(expenseEditDialog);let editingExpenseId='';const expenseEditAmount=document.getElementById('expenseEditAmount'),expenseEditModifier=document.getElementById('expenseEditModifier'),expenseEditType=document.getElementById('expenseEditType'),expenseEditMonth=document.getElementById('expenseEditMonth'),expenseEditComment=document.getElementById('expenseEditComment');function syncEditedExpense(entry){if(!firebaseClient||!firebaseUser)return;firebaseClient.setDoc(firebaseClient.doc(firebaseClient.db,...firebasePath('expenses'),entry.id),entry).catch(error=>{console.error(error);firebaseStatusMessage('Could not sync this expense yet. It remains saved on this device.')})}function deleteCloudExpense(id){if(!firebaseClient||!firebaseUser)return;firebaseClient.deleteDoc(firebaseClient.doc(firebaseClient.db,...firebasePath('expenses'),id)).catch(error=>{console.error(error);firebaseStatusMessage('Could not delete this expense from sync yet. It remains removed on this device.')})}function openExpenseEdit(id){const entry=data.entries.find(item=>item.id===id);if(!entry)return;editingExpenseId=id;expenseEditAmount.value=round(entry.original);expenseEditModifier.value=round(entry.modifier).toFixed(2);expenseEditType.value=entry.type;expenseEditMonth.innerHTML=data.months.map(month=>`<option value="${month.id}">${month.label}</option>`).join('');expenseEditMonth.value=entry.month;expenseEditComment.value=entry.comment||'';expenseEditDialog.showModal();expenseEditAmount.focus()}document.addEventListener('click',event=>{const edit=event.target.closest('[data-edit-expense]'),remove=event.target.closest('[data-delete-expense]');if(edit)openExpenseEdit(edit.dataset.editExpense);if(remove){const entry=data.entries.find(item=>item.id===remove.dataset.deleteExpense);if(!entry||!confirm('Delete this expense?'))return;const month=data.months.find(item=>item.id===entry.month);if(month)month[entry.type.toLowerCase()]=round(month[entry.type.toLowerCase()]-entry.final);data.entries=data.entries.filter(item=>item.id!==entry.id);save();if(month)syncMonth(month);deleteCloudExpense(entry.id);render()}});document.getElementById('closeExpenseEdit').onclick=()=>expenseEditDialog.close();document.getElementById('cancelExpenseEdit').onclick=()=>expenseEditDialog.close();expenseEditDialog.addEventListener('click',event=>{if(event.target===expenseEditDialog)expenseEditDialog.close()});document.getElementById('expenseEditForm').addEventListener('submit',event=>{event.preventDefault();const entry=data.entries.find(item=>item.id===editingExpenseId),original=num(expenseEditAmount.value),modifier=Math.max(.9,Math.min(1,num(expenseEditModifier.value))),type=expenseEditType.value,monthId=expenseEditMonth.value;if(!entry||original<=0)return;const oldMonth=data.months.find(item=>item.id===entry.month),newMonth=data.months.find(item=>item.id===monthId),oldKey=entry.type.toLowerCase(),newKey=type.toLowerCase(),final=round(original*modifier);if(oldMonth)oldMonth[oldKey]=round(oldMonth[oldKey]-entry.final);if(newMonth)newMonth[newKey]=round(newMonth[newKey]+final);Object.assign(entry,{original,modifier,type,month:monthId,final,comment:expenseEditComment.value.trim().slice(0,500),updatedAt:new Date().toISOString()});save();[...new Set([oldMonth,newMonth].filter(Boolean))].forEach(syncMonth);syncEditedExpense(entry);expenseEditDialog.close();render()});
 const meganReminderDialog=document.createElement('dialog');meganReminderDialog.id='meganReminderDialog';meganReminderDialog.className='megan-reminder-dialog';meganReminderDialog.innerHTML='<div class="dialog-inner"><button class="dialog-close" id="closeMeganReminder" aria-label="Close reminder">×</button><h2>Megan owes</h2><p id="meganReminderText"></p><div class="toolbar" style="justify-content:flex-end;margin:18px 0 0"><button class="button primary" id="dismissMeganReminder">Got it</button></div></div>';document.body.append(meganReminderDialog);function maybeShowMeganReminder(){const now=new Date();if(now.getDate()!==1||meganReminderDialog.open)return;const current=currentMonthKey();if(data.settings.meganReminderSeen===current)return;const previous=new Date(now.getFullYear(),now.getMonth()-1,1),previousId=`${previous.getFullYear()}-${String(previous.getMonth()+1).padStart(2,'0')}`,month=data.months.find(item=>item.id===previousId);if(!month)return;document.getElementById('meganReminderText').textContent=`For ${month.label}, Megan owes ${money(total(month).megan)}.`;meganReminderDialog.showModal()}function dismissMeganReminder(){data.settings.meganReminderSeen=currentMonthKey();save();syncSettings();meganReminderDialog.close()}document.getElementById('closeMeganReminder').onclick=dismissMeganReminder;document.getElementById('dismissMeganReminder').onclick=dismissMeganReminder;meganReminderDialog.addEventListener('click',event=>{if(event.target===meganReminderDialog)dismissMeganReminder()});
 function bytesToBase64(bytes){let binary='';bytes.forEach(byte=>binary+=String.fromCharCode(byte));return btoa(binary)}function base64ToBytes(value){return Uint8Array.from(atob(value),char=>char.charCodeAt(0))}async function backupKey(password,salt){const material=await crypto.subtle.importKey('raw',new TextEncoder().encode(password),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:150000,hash:'SHA-256'},material,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}function setupBackupTools(){const panel=document.querySelector('#settings .panel.settings');if(!panel||document.getElementById('backupSection'))return;const section=document.createElement('section');section.id='backupSection';section.className='backup-section';section.innerHTML='<p class="eyebrow">BACKUP & RESTORE</p><h2>Your encrypted backup</h2><p class="small">Backups are password-protected and stay on your device until you choose where to save them.</p><div class="toolbar"><button class="button ghost" type="button" id="downloadBackup">Download backup</button><button class="button ghost" type="button" id="restoreBackup">Restore backup</button><input id="restoreBackupFile" type="file" accept="application/json,.json" class="hidden"></div>';panel.append(section);document.getElementById('downloadBackup').onclick=downloadBackup;document.getElementById('restoreBackup').onclick=()=>document.getElementById('restoreBackupFile').click();document.getElementById('restoreBackupFile').addEventListener('change',restoreBackup)}async function downloadBackup(){if(!crypto.subtle)return alert('This browser cannot create encrypted backups.');const password=prompt('Choose a password for this backup. You will need it to restore the file.');if(!password)return;const salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12)),key=await backupKey(password,salt),plain=new TextEncoder().encode(JSON.stringify({data,exportedAt:new Date().toISOString()})),cipher=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,plain),payload={format:'cream-corn-encrypted-backup',version:1,kdf:'PBKDF2-SHA-256',iterations:150000,salt:bytesToBase64(salt),iv:bytesToBase64(iv),ciphertext:bytesToBase64(new Uint8Array(cipher))},url=URL.createObjectURL(new Blob([JSON.stringify(payload)],{type:'application/json'})),link=document.createElement('a');link.href=url;link.download=`cream-corn-backup-${localDateKey()}.json`;link.click();URL.revokeObjectURL(url)}async function restoreBackup(event){const file=event.target.files?.[0];event.target.value='';if(!file)return;try{const payload=JSON.parse(await file.text());let restored;if(payload.format==='cream-corn-encrypted-backup'){const password=prompt('Enter this backup’s password.');if(!password)return;const key=await backupKey(password,base64ToBytes(payload.salt)),plain=await crypto.subtle.decrypt({name:'AES-GCM',iv:base64ToBytes(payload.iv)},key,base64ToBytes(payload.ciphertext));restored=JSON.parse(new TextDecoder().decode(plain)).data}else restored=payload.data;if(!restored?.months||!Array.isArray(restored.months)||!Array.isArray(restored.entries)||!confirm('Replace this device’s Cream Corn data with this backup?'))return;data=restored;delete data.dropbox;data.todos=Array.isArray(data.todos)?data.todos:[];data.settings={...starter.settings,...data.settings};ensureYear(currentYear);ensureYear(currentYear+1);data.months.sort((a,b)=>a.id.localeCompare(b.id));active=data.months.find(month=>month.id===currentMonthKey())?.id||data.months.at(-1).id;save();await syncSettings();await Promise.all(data.months.map(syncMonth));await Promise.all(data.entries.map(entry=>{entry.id=entry.id||crypto.randomUUID();return firebaseClient&&firebaseUser?firebaseClient.setDoc(firebaseClient.doc(firebaseClient.db,...firebasePath('expenses'),entry.id),entry):Promise.resolve()}));await Promise.all(data.todos.map(syncTodo));render();alert('Backup restored.')}catch(error){console.error(error);alert('That backup could not be restored. Check the password and file.') }}
-const todayTodoRender=render;render=()=>{todayTodoRender();setupBackupTools();renderTodayTodoBanner();maybeShowMeganReminder()};render();
+const todayTodoRender=render;render=()=>{todayTodoRender();setupBackupTools();renderTodayTodoBanner();maybeShowMeganReminder()};render();function utilityValueMissing(month,key){const now=new Date(),offset=key==='water'?-2:-1,cutoff=`${new Date(now.getFullYear(),now.getMonth()+offset,1).getFullYear()}-${String(new Date(now.getFullYear(),now.getMonth()+offset,1).padStart?new Date(now.getFullYear(),now.getMonth()+offset,1).getMonth()+1:new Date(now.getFullYear(),now.getMonth()+offset,1).getMonth()+1).padStart(2,'0')}`;return month.id<=cutoff&&num(month[key])===0}function renderUtilityAlert(){const alert=document.getElementById('utilityAlert');if(!alert)return;const names={water:'Water',electricity:'Electricity',gas:'Gas'},missing=['water','electricity','gas'].map(key=>[key,data.months.filter(month=>utilityValueMissing(month,key))]).filter(([,months])=>months.length);alert.classList.toggle('hidden',!missing.length);if(!missing.length){alert.textContent='';return}alert.textContent=`Utility values still needed — ${missing.map(([key,months])=>`${names[key]}: ${months.map(month=>`${monthLabels[Number(month.id.slice(5,7))-1].slice(0,3)} '${month.id.slice(2,4)}`).join(', ')}`).join(' · ')}`};const utilityAlertRender=render;render=()=>{utilityAlertRender();renderUtilityAlert()};async function addCloudExpense(entry,keyName,notes){if(!firebaseClient||!firebaseUser)return;const monthRef=firebaseClient.doc(firebaseClient.db,...firebasePath('months'),entry.month),entryRef=firebaseClient.doc(firebaseClient.db,...firebasePath('expenses'),entry.id);try{await firebaseClient.runTransaction(firebaseClient.db,async transaction=>{const snapshot=await transaction.get(monthRef),remote=cleanMonth(snapshot.exists()?snapshot.data():freshMonth(entry.month));remote[keyName]=round(remote[keyName]+entry.final);if(notes!==undefined)remote.notes=notes;transaction.set(monthRef,{...remote,updatedAt:new Date().toISOString()})});await firebaseClient.setDoc(entryRef,entry)}catch(error){console.error(error);firebaseStatusMessage('Could not sync this expense yet. It remains saved on this device.')}}saveExpense.onclick=()=>{const original=num(expenseAmount.value),modifier=Math.max(.9,Math.min(1,num(expenseModifier.value)));if(original<=0)return notice.textContent='Enter a positive expense amount.';const final=round(original*modifier),type=expenseType.value,keyName=type.toLowerCase(),comment=type==='Spending'?expenseComment.value.trim():'',entry={id:crypto.randomUUID(),type,month:expenseMonth.value,original,modifier,final,comment,createdAt:new Date().toISOString()},month=data.months.find(item=>item.id===entry.month);month[keyName]=round(month[keyName]+final);const notesChanged=original>200&&comment?appendExpenseCommentToNotes(month,entry):false;data.entries.unshift(entry);addCloudExpense(entry,keyName,notesChanged?month.notes:undefined);active=entry.month;save();dialog.close();expenseAmount.value='';expenseComment.value='';notice.textContent=money(final)+' added to '+type.toLowerCase()+'.';render()};render();
 </script>
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js';
@@ -200,4 +210,325 @@ const todayTodoRender=render;render=()=>{todayTodoRender();setupBackupTools();re
     create:config=>{const app=initializeApp(config);return {auth:getAuth(app),db:getFirestore(app),doc,collection,getDocs,onSnapshot,runTransaction,setDoc,deleteDoc,GoogleAuthProvider,onAuthStateChanged,signInWithPopup,signOut}},
   };
   window.dispatchEvent(new Event('firebase-sdk-ready'));
-</script></body></html>
+</script>
+<script>
+  // Months fields accept calculator-style input while keeping their stored value numeric.
+  function resolveMonthExpression(raw) {
+    const expression = String(raw ?? '').trim().replaceAll(',', '');
+    if (!expression) return 0;
+    if (!/^[0-9+\-*/().\s]+$/.test(expression)) return null;
+    try {
+      const value = Function(`"use strict"; return (${expression})`)();
+      return Number.isFinite(value) ? Math.round(value * 100) / 100 : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  document.addEventListener('focusin', event => {
+    const field = event.target;
+    if (!field?.dataset?.month || field.tagName !== 'INPUT') return;
+    field.dataset.originalValue = field.value;
+    field.type = 'text';
+    field.inputMode = 'decimal';
+  }, true);
+
+  // This capture-phase handler replaces the older numeric-only change handler.
+  document.addEventListener('change', event => {
+    const field = event.target;
+    if (!field?.dataset?.month) return;
+    event.stopImmediatePropagation();
+    const value = resolveMonthExpression(field.value);
+    if (value === null) {
+      field.value = field.dataset.originalValue ?? '';
+      return;
+    }
+    const month = data.months.find(item => item.id === field.dataset.month);
+    if (!month) return;
+    month[field.dataset.key] = value;
+    save();
+    syncMonth(month);
+    render();
+  }, true);
+
+  function utilityValueMissing(month, key) {
+    const now = new Date();
+    const cutoffDate = new Date(now.getFullYear(), now.getMonth() + (key === 'water' ? -2 : -1), 1);
+    const cutoff = `${cutoffDate.getFullYear()}-${String(cutoffDate.getMonth() + 1).padStart(2, '0')}`;
+    return month.id <= cutoff && num(month[key]) === 0;
+  }
+</script>
+<style>
+  /* Keep the month identifier visible while the rest of a year table scrolls. */
+  .monthly-table thead th:first-child,
+  .monthly-table tbody th:first-child {
+    position: sticky;
+    left: 0;
+    background: var(--surface);
+    background-clip: padding-box;
+    box-shadow: 2px 0 0 var(--line);
+  }
+  .monthly-table thead th:first-child {
+    z-index: 3;
+    background: var(--soft);
+  }
+  .monthly-table tbody th:first-child { z-index: 2; }
+</style>
+<script>
+  (() => {
+    const addDialog = document.getElementById('expenseDialog');
+    const expenseGrid = addDialog.querySelector('.dialog-grid');
+    const amount = document.getElementById('expenseAmount');
+    const storedType = document.getElementById('expenseType');
+    const modifier = document.getElementById('expenseModifier');
+    const month = document.getElementById('expenseMonth');
+    const comment = document.getElementById('expenseComment');
+    const final = document.getElementById('finalAmount');
+    const oldFinal = final.closest('.final');
+    const oldComment = document.getElementById('commentField');
+
+    let category = 'Shopping';
+    let subcategory = 'Dining';
+
+    const amountLabel = document.createElement('label');
+    amountLabel.className = 'expense-amount-field';
+    amountLabel.append('Amount', amount);
+    const finalLabel = document.createElement('label');
+    finalLabel.className = 'expense-final-field';
+    finalLabel.append('Final amount', final);
+    const typeLabel = document.createElement('label');
+    typeLabel.className = 'full-row';
+    typeLabel.innerHTML = '<span>Type</span><div class="option-grid expense-category-options" id="expenseCategoryOptions"><button type="button" class="choice-option" data-category="Groceries">Groceries</button><button type="button" class="choice-option" data-category="Restaurants">Restaurants</button><button type="button" class="choice-option selected" data-category="Shopping">Shopping</button><button type="button" class="choice-option" data-category="Bills">Bills</button></div><div class="expense-suboptions hidden" id="billSuboptions"><span>Bill type</span><div class="option-grid"><button type="button" class="choice-option selected" data-bill="Water">Water</button><button type="button" class="choice-option" data-bill="Electricity">Electricity</button><button type="button" class="choice-option" data-bill="Gas">Gas</button></div></div><div class="expense-suboptions" id="shoppingSuboptions"><span>Shopping type</span><div class="option-grid shopping-suboptions"><button type="button" class="choice-option selected" data-shopping="Dining">Dining</button><button type="button" class="choice-option" data-shopping="Entertainment">Entertainment</button><button type="button" class="choice-option" data-shopping="Travel">Travel</button><button type="button" class="choice-option" data-shopping="Health">Health</button><button type="button" class="choice-option" data-shopping="Pets">Pets</button><button type="button" class="choice-option" data-shopping="Misc">Misc</button></div></div>';
+    typeLabel.append(storedType);
+
+    const modifierLabel = document.createElement('label');
+    modifierLabel.className = 'full-row';
+    modifierLabel.innerHTML = '<span>CC modifier</span><div class="option-grid modifier-grid" id="newModifierOptions"><button type="button" class="choice-option" data-new-modifier="0.94">94%</button><button type="button" class="choice-option selected" data-new-modifier="0.95">95%</button><button type="button" class="choice-option" data-new-modifier="0.97">97%</button><button type="button" class="choice-option" data-new-modifier="0.98">98%</button><button type="button" class="choice-option" data-new-modifier="0.99">99%</button><button type="button" class="choice-option" data-new-modifier="1">100%</button></div>';
+    modifierLabel.append(modifier);
+    oldComment.classList.add('full-row');
+    expenseGrid.replaceChildren(amountLabel, finalLabel, typeLabel, modifierLabel, month.closest('label'), oldComment);
+    oldFinal?.remove();
+
+    const updateFinal = () => { final.textContent = money(num(amount.value) * Math.max(.9, Math.min(1, num(modifier.value)))); };
+    const updateType = () => {
+      const bills = document.getElementById('billSuboptions');
+      const shopping = document.getElementById('shoppingSuboptions');
+      bills.classList.toggle('hidden', category !== 'Bills');
+      shopping.classList.toggle('hidden', category !== 'Shopping');
+      storedType.value = category === 'Groceries' ? 'Groceries' : category === 'Bills' ? subcategory : 'Spending';
+      oldComment.classList.toggle('hidden', storedType.value !== 'Spending');
+    };
+    document.getElementById('expenseCategoryOptions').addEventListener('click', event => {
+      const choice = event.target.closest('[data-category]');
+      if (!choice) return;
+      category = choice.dataset.category;
+      if (category === 'Bills') subcategory = 'Water';
+      if (category === 'Shopping') subcategory = 'Dining';
+      document.querySelectorAll('[data-category]').forEach(button => button.classList.toggle('selected', button === choice));
+      document.querySelectorAll('[data-bill]').forEach((button, index) => button.classList.toggle('selected', index === 0));
+      document.querySelectorAll('[data-shopping]').forEach((button, index) => button.classList.toggle('selected', index === 0));
+      updateType();
+    });
+    document.getElementById('billSuboptions').addEventListener('click', event => {
+      const choice = event.target.closest('[data-bill]');
+      if (!choice) return;
+      subcategory = choice.dataset.bill;
+      document.querySelectorAll('[data-bill]').forEach(button => button.classList.toggle('selected', button === choice));
+      updateType();
+    });
+    document.getElementById('shoppingSuboptions').addEventListener('click', event => {
+      const choice = event.target.closest('[data-shopping]');
+      if (!choice) return;
+      subcategory = choice.dataset.shopping;
+      document.querySelectorAll('[data-shopping]').forEach(button => button.classList.toggle('selected', button === choice));
+    });
+    document.getElementById('newModifierOptions').addEventListener('click', event => {
+      const choice = event.target.closest('[data-new-modifier]');
+      if (!choice) return;
+      modifier.value = choice.dataset.newModifier;
+      document.querySelectorAll('[data-new-modifier]').forEach(button => button.classList.toggle('selected', button === choice));
+      updateFinal();
+    });
+    amount.addEventListener('input', updateFinal);
+    updateType();
+    updateFinal();
+
+    saveExpense.onclick = () => {
+      const original = num(amount.value);
+      const appliedModifier = Math.max(.9, Math.min(1, num(modifier.value)));
+      if (original <= 0) return notice.textContent = 'Enter a positive expense amount.';
+      const finalAmount = round(original * appliedModifier);
+      const type = storedType.value;
+      const keyName = type.toLowerCase();
+      const entryComment = type === 'Spending' ? comment.value.trim() : '';
+      const entry = { id: crypto.randomUUID(), type, category, subcategory: category === 'Groceries' || category === 'Restaurants' ? '' : subcategory, month: month.value, original, modifier: appliedModifier, final: finalAmount, comment: entryComment, createdAt: new Date().toISOString() };
+      const targetMonth = data.months.find(item => item.id === entry.month);
+      targetMonth[keyName] = round(targetMonth[keyName] + finalAmount);
+      const notesChanged = original > 200 && entryComment ? appendExpenseCommentToNotes(targetMonth, entry) : false;
+      data.entries.unshift(entry);
+      addCloudExpense(entry, keyName, notesChanged ? targetMonth.notes : undefined);
+      active = entry.month;
+      save();
+      addDialog.close();
+      amount.value = '';
+      comment.value = '';
+      notice.textContent = money(finalAmount) + ' added to ' + category.toLowerCase() + '.';
+      render();
+    };
+  })();
+</script>
+<style>
+  #expenseDialog .expense-amount-field,
+  #expenseDialog .expense-final-field { min-width:0; }
+  #expenseDialog .expense-final-field strong {
+    display:flex; align-items:center; min-height:42px; padding:8px;
+    box-sizing:border-box; border:1px solid var(--line); border-radius:8px;
+    background:var(--soft); color:var(--ink); font-size:18px;
+  }
+  #expenseDialog .expense-suboptions { display:grid; gap:8px; margin-top:16px; }
+  #expenseDialog .expense-suboptions > span { color:var(--muted); font-size:14px; font-weight:700; }
+  #expenseDialog .shopping-suboptions { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  @media (max-width:680px) {
+    #expenseDialog .dialog-inner { display:flex; flex-direction:column; height:100dvh; overflow:hidden; padding:32px 24px 0!important; }
+    #expenseDialog .dialog-grid { flex:1; min-height:0; overflow-y:auto; padding:0 0 16px; }
+    #expenseDialog .dialog-inner > .toolbar.modal-actions { position:relative!important; bottom:auto!important; flex:none; width:calc(100% + 48px); margin:0 -24px!important; padding:16px 24px max(16px, env(safe-area-inset-bottom))!important; background:var(--surface); border-top:1px solid var(--line); }
+    #expenseDialog .shopping-suboptions { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  }
+</style>
+<script>
+  (() => {
+    const categoryBarColors = {
+      expenses: '#35b9b1',
+      groceries: '#efb43b',
+      dining: '#78b575',
+      spending: '#4d96b7'
+    };
+
+    function categoryBarMonths() {
+      return data.months
+        .filter(month => month.id <= currentMonthKey())
+        .slice(-12)
+        .map(month => {
+          const dining = round(data.entries
+            .filter(entry => entry.month === month.id && entry.category === 'Shopping' && entry.subcategory === 'Dining')
+            .reduce((sum, entry) => sum + num(entry.final), 0));
+          return {
+            ...month,
+            expenses: round(Math.max(0, num(data.settings.fixedExpenses) + num(data.settings.kevinMortgage) + num(month.water) + num(month.electricity) + num(month.gas) - num(month.cashOffset))),
+            groceries: num(month.groceries),
+            dining,
+            spendingOther: round(Math.max(0, num(month.spending) - dining))
+          };
+        });
+    }
+
+    function categoryBarsSvg(months) {
+      if (!months.length) return '<div class="chart-empty">No monthly data yet.</div>';
+      const width = 1040, height = 360, left = 58, right = 20, top = 22, bottom = 56;
+      const plotWidth = width - left - right, plotHeight = height - top - bottom;
+      const maxValue = Math.max(1, ...months.flatMap(month => [month.expenses, month.groceries + month.dining, month.spendingOther]));
+      const tickStep = Math.max(100, Math.ceil(maxValue / 4 / 100) * 100);
+      const topTick = tickStep * 4;
+      const y = value => top + plotHeight - value / topTick * plotHeight;
+      const groupWidth = plotWidth / months.length;
+      const barWidth = Math.min(20, Math.max(10, groupWidth * .22));
+      const foodGap = 2;
+      const monthLabel = month => `${monthLabels[Number(month.id.slice(5, 7)) - 1].slice(0, 3)} '${month.id.slice(2, 4)}`;
+      const bars = months.map((month, index) => {
+        const center = left + groupWidth * index + groupWidth / 2;
+        const expenseX = center - barWidth * 1.65;
+        const foodX = center - barWidth / 2;
+        const spendingX = center + barWidth * .65;
+        const expenseHeight = Math.max(0, top + plotHeight - y(month.expenses));
+        const groceryHeight = Math.max(0, top + plotHeight - y(month.groceries));
+        const diningHeight = Math.max(0, top + plotHeight - y(month.dining));
+        const spendingHeight = Math.max(0, top + plotHeight - y(month.spendingOther));
+        const diningY = y(month.groceries + month.dining);
+        const groceryY = y(month.groceries);
+        const diningBarHeight = Math.max(0, diningHeight - (month.dining && month.groceries ? foodGap : 0));
+        return `<g class="category-bar-group"><rect class="category-bar" x="${expenseX}" y="${y(month.expenses)}" width="${barWidth}" height="${expenseHeight}" fill="${categoryBarColors.expenses}"><title>${month.label}\nExpenses: ${money(month.expenses)}</title></rect><rect class="category-bar" x="${foodX}" y="${groceryY}" width="${barWidth}" height="${groceryHeight}" fill="${categoryBarColors.groceries}"><title>${month.label}\nGroceries: ${money(month.groceries)}</title></rect>${month.dining ? `<rect class="category-bar" x="${foodX}" y="${diningY}" width="${barWidth}" height="${diningBarHeight}" fill="${categoryBarColors.dining}"><title>${month.label}\nDining: ${money(month.dining)}</title></rect>` : ''}<rect class="category-bar" x="${spendingX}" y="${y(month.spendingOther)}" width="${barWidth}" height="${spendingHeight}" fill="${categoryBarColors.spending}"><title>${month.label}\nSpending: ${money(month.spendingOther)}</title></rect><text class="chart-axis-label category-bar-month" x="${center}" y="${height - 20}" text-anchor="middle">${monthLabel(month)}</text></g>`;
+      }).join('');
+      const ticks = [0, 1, 2, 3, 4].map(index => {
+        const value = tickStep * index;
+        return `<g><line class="chart-grid-line" x1="${left}" x2="${width - right}" y1="${y(value)}" y2="${y(value)}"/><text class="chart-axis-label" x="${left - 10}" y="${y(value) + 4}" text-anchor="end">${money(value)}</text></g>`;
+      }).join('');
+      return `<div class="category-bar-viewport"><svg class="category-bar-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="Monthly spending by category, with expenses, dining and groceries, and other spending">${ticks}<line class="chart-axis" x1="${left}" x2="${width - right}" y1="${top + plotHeight}" y2="${top + plotHeight}"/>${bars}</svg></div>`;
+    }
+
+    function renderCategoryBars() {
+      const oldChart = document.getElementById('categoryBarsChart');
+      oldChart?.remove();
+      const months = categoryBarMonths();
+      const chart = document.createElement('article');
+      chart.id = 'categoryBarsChart';
+      chart.className = 'chart-card category-bars-chart';
+      chart.innerHTML = `<div class="chart-card-head"><div><h3>Spending by category</h3><p class="chart-subtitle">Last 12 months</p></div></div>${categoryBarsSvg(months)}<div class="category-bar-legend"><span><i style="background:${categoryBarColors.expenses}"></i>Expenses</span><span><i style="background:${categoryBarColors.groceries}"></i>Groceries</span><span><i style="background:${categoryBarColors.dining}"></i>Dining</span><span><i style="background:${categoryBarColors.spending}"></i>Spending</span></div>`;
+      chartArea.append(chart);
+    }
+
+    const baseCategoryBarsRender = renderCharts;
+    renderCharts = () => { baseCategoryBarsRender(); renderCategoryBars(); };
+    renderCharts();
+  })();
+</script>
+<style>
+  .category-bars-chart { grid-column:1 / -1; margin-top:16px; }
+  .category-bar-viewport { width:100%; overflow-x:auto; margin-top:16px; }
+  .category-bar-svg { display:block; width:100%; min-width:780px; height:auto; color:var(--muted); }
+  .category-bar { shape-rendering:geometricPrecision; }
+  .category-bar:hover { opacity:.78; }
+  .category-bar-month { font-size:13px; }
+  .category-bar-legend { display:flex; justify-content:center; flex-wrap:wrap; gap:12px 18px; margin-top:8px; color:var(--muted); font-size:14px; }
+  .category-bar-legend span { display:flex; align-items:center; gap:6px; }
+  .category-bar-legend i { width:12px; height:12px; border-radius:2px; }
+  @media (max-width:680px) {
+    .category-bars-chart { margin-top:16px; }
+    .category-bar-viewport { margin-left:-4px; width:calc(100% + 8px); }
+    .category-bar-svg { min-width:760px; }
+    .category-bar-legend { justify-content:flex-start; font-size:13px; gap:8px 12px; }
+  }
+</style>
+<script>
+  (() => {
+    const uiIcons = {
+      edit: '<svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.1439.768845C14.169-.256282 15.8311-.256282 16.8562.768845c1.0251 1.025125 1.0251 2.687185 0 3.712305L5.96405 15.3733c-.38306.3831-.83782.6869-1.33832.8942l-3.0702 1.2716c-.42039.1742-.90427.0779-1.22601-.2439-.321739-.3217-.41798-.8056-.243842-1.226l1.271642-3.0698c.2073-.5004.51113-.9551.89415-1.3381L13.1439.768845Z" fill="currentColor"/></svg>',
+      trash: '<svg viewBox="0 0 19 22" fill="none" aria-hidden="true"><path d="m11.9904 7.75-.3462 9m-4.7884 0-.34615-9M2.02235 4.54057c1.14643-.17313 2.30614-.30572 3.47765-.39625C6.73744 4.0487 7.98803 4 9.25 4s2.512.0487 3.75.14432c1.1715.09053 2.3312.22312 3.4776.39625.342.05164.6828.1069 1.0224.16572m-1.0224-.33144-1.0678 13.88203C15.3196 19.5948 14.3421 20.5 13.1664 20.5H5.33357c-1.17571 0-2.1532-.9052-2.24337-2.0774L2.02235 4.54057M1 4.70629c.33957-.05882.68037-.11408 1.02235-.16572M13 4.14432v-.91613c0-1.17937-.9107-2.16396-2.0894-2.20167C10.3592 1.00889 9.80565 1 9.25 1c-.55565 0-1.10922.00889-1.66058.02652C6.41065 1.06423 5.5 2.04882 5.5 3.22819v.91613" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      overview: '<svg viewBox="0 0 21 20" aria-hidden="true"><path d="M9.96967 1.71967c.29293-.29289.76773-.29289 1.06063 0l8.6894 8.68933c.2929.2929.7677.2929 1.0606 0 .2929-.2929.2929-.76776 0-1.06065L12.091.659009c-.8787-.87868-2.30331-.87868-3.18199.000001L.21967 9.34835c-.292893.29289-.292893.76775 0 1.06065.292893.2929.767767.2929 1.06066 0l8.68934-8.68933Z" fill="currentColor"/><path d="m10.5 3.31066 8.159 8.15904c.0297.0297.0601.0584.091.0861v6.1979c0 1.0355-.8395 1.875-1.875 1.875H13.5c-.4142 0-.75-.3358-.75-.75v-4.5c0-.4142-.3358-.75-.75-.75H9c-.41421 0-.75.3358-.75.75v4.5c0 .4142-.33579.75-.75.75H4.125c-1.03553 0-1.875-.8395-1.875-1.875v-6.1979c.03093-.0277.06127-.0564.09099-.0861L10.5 3.31066Z" fill="currentColor"/></svg>',
+      months: '<svg viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.5 0c.41421 0 .75.335786.75.75v1.5h9V.75C14.25.335786 14.5858 0 15 0s.75.335786.75.75v1.5h.75c1.6569 0 3 1.34315 3 3V16.5c0 1.6569-1.3431 3-3 3H3c-1.65685 0-3-1.3431-3-3V5.25c0-1.65685 1.34315-3 3-3h.75V.75C3.75.335786 4.08579 0 4.5 0ZM18 9c0-.82843-.6716-1.5-1.5-1.5H3c-.82843 0-1.5.67157-1.5 1.5v7.5c0 .8284.67157 1.5 1.5 1.5h13.5c.8284 0 1.5-.6716 1.5-1.5V9Z" fill="currentColor"/></svg>',
+      history: '<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 4v6h4.5M19 10c0 4.9706-4.0294 9-9 9s-9-4.0294-9-9 4.0294-9 9-9 9 4.0294 9 9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      todos: '<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m6.625 10.375 2.25 2.25 3.75-5.25M18.625 9.625c0 4.9706-4.0294 9-9 9s-9-4.0294-9-9 4.0294-9 9-9 9 4.0294 9 9Z" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      settings: '<svg viewBox="0 0 28 28" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12.9132 0c-.5172 0-.9491.394386-.9959.909465l-.3071 3.377875c-.9831.24107-1.9091.6275-2.7539 1.13521L5.92316 2.97826c-.39733-.33111-.98158-.30461-1.3473.06111L3.03892 4.57632c-.36572.36571-.39222.94996-.06112 1.34729l2.4444 2.93328c-.50754.84467-.89385 1.77051-1.13486 2.75331l-3.377875.3071C.394386 11.9641 0 12.396 0 12.9132v2.1736c0 .5172.394385.9491.909464.9959l3.377876.3071c.24107.9831.6275 1.9091 1.13521 2.7539l-2.4444 2.9331c-.33111.3974-.30461.9816.06111 1.3473l1.53695 1.537c.36572.3657.94996.3922 1.34729.0611l2.93328-2.4444c.84467.5075 1.77051.8938 2.75331 1.1349l.3071 3.3778c.0468.5151.4787.9095.9959.9095h2.1736c.5172 0 .9491-.3944.9959-.9095l.3071-3.3778c.9828-.2411 1.9086-.6274 2.7533-1.1349l2.9333 2.4444c.3973.3311.9816.3046 1.3473-.0611l1.5369-1.537c.3657-.3657.3922-.9499.0611-1.3473l-2.4443-2.9331c.5078-.8448.8942-1.7708 1.1353-2.7539l3.3778-.3071c.5151-.0468.9095-.4787.9095-.9959v-2.1736c0-.5172-.3944-.9491-.9095-.9959l-3.3778-.3071c-.2411-.9828-.6275-1.90864-1.1353-2.75331l2.4443-2.93328c.3311-.39733.3046-.98158-.0611-1.34729l-1.5369-1.53695c-.3657-.36572-.95-.39222-1.3473-.06111l-2.9333 2.44429c-.8447-.50771-1.7705-.89414-2.7533-1.13521l-.3071-3.377875C16.0359.394385 15.604 0 15.0868 0h-2.1736ZM14 10c-2.2091 0-4 1.7909-4 4s1.7909 4 4 4 4-1.7909 4-4-1.7909-4-4-4Z" fill="currentColor"/></svg>',
+      notes: '<svg viewBox="0 0 14 14" aria-hidden="true"><path d="M14 9.87831V1.5C14 .671562 13.3284 0 12.5 0h-11C.671562 0 0 .671562 0 1.5v10.9996c0 .8285.671562 1.5 1.5 1.5h8.37869c.39781 0 .77931-.158 1.06061-.4393l2.6214-2.6213C13.842 10.6577 14 10.2761 14 9.87831ZM10 12.3783V9.99963h2.3787L10 12.3783ZM12.5 1.5v6.99963H9.25c-.41422 0-.75.33578-.75.75v3.24997H1.5V1.5h11Z" fill="currentColor"/></svg>'
+    };
+
+    function applySvgIcons() {
+      document.querySelectorAll('.nav-tab').forEach(tab => {
+        const icon = tab.querySelector('.nav-icon');
+        if (icon && uiIcons[tab.dataset.tab]) icon.innerHTML = uiIcons[tab.dataset.tab];
+      });
+      document.querySelectorAll('.notes-button').forEach(button => { button.innerHTML = uiIcons.notes; });
+      document.querySelectorAll('.history-icon-button[data-edit-expense], .todo-edit').forEach(button => { button.innerHTML = uiIcons.edit; });
+      document.querySelectorAll('.history-icon-button[data-delete-expense]').forEach(button => { button.innerHTML = uiIcons.trash; });
+    }
+
+    const iconsHistoryRender = renderHistory;
+    renderHistory = () => { iconsHistoryRender(); applySvgIcons(); };
+    const iconsTodosRender = renderTodos;
+    renderTodos = () => { iconsTodosRender(); applySvgIcons(); };
+    const iconsRender = render;
+    render = () => { iconsRender(); applySvgIcons(); };
+    applySvgIcons();
+  })();
+</script>
+<style>
+  .nav-tab .nav-icon { display:grid; place-items:center; width:20px; height:20px; line-height:1; }
+  .nav-tab .nav-icon svg { display:block; width:20px; height:20px; }
+  .notes-button svg { display:block; width:14px; height:14px; }
+  .history-icon-button svg,
+  .todo-edit svg { display:block; width:24px; height:24px; }
+  .history-icon-button.history-delete svg { width:23px; height:25px; }
+  @media (max-width:680px) {
+    .nav-tab .nav-icon, .nav-tab .nav-icon svg { width:22px; height:22px; }
+  }
+</style>
+</body></html>
