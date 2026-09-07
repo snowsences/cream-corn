@@ -897,4 +897,13 @@ const todayTodoRender=render;render=()=>{todayTodoRender();setupBackupTools();re
     #todos .todo-form input[type="date"] { width:100%!important; }
   }
 </style>
+<script>
+  // Use a deployment-specific worker URL so the browser bypasses any older
+  // cached worker script. The worker itself deliberately does not cache app files.
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker
+      .register('sw.js?build=20260907-2', { updateViaCache: 'none' })
+      .then(registration => registration.update());
+  }
+</script>
 </body></html>
