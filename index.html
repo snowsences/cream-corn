@@ -1124,6 +1124,14 @@ const todayTodoRender=render;render=()=>{todayTodoRender();setupBackupTools();re
   #settings .settings-sync #firebaseSignOut.hidden,
   #settings .settings-sync #firebaseSignIn.hidden { display:none!important; }
 </style>
+<style>
+  @media (min-width:681px) {
+    .top-header { border-bottom:0!important; }
+    .top-header .brand-mark img { border-radius:8px!important; }
+  }
+  #settings .panel { width:100%!important; max-width:none!important; }
+  .income-level-current { color:var(--muted); }
+</style>
 <script>
   (() => {
     const panelHeading = (eyebrow, title, description = '') => {
@@ -1192,6 +1200,52 @@ const todayTodoRender=render;render=()=>{todayTodoRender();setupBackupTools();re
     const settingsUserHandler = onFirebaseUser;
     onFirebaseUser = async user => { await settingsUserHandler(user); organizeSettingsPanels(); };
     organizeSettingsPanels();
+  })();
+</script>
+<script>
+  (() => {
+    const priorMonth = monthId => {
+      const [year, month] = monthId.split('-').map(Number);
+      const date = new Date(year, month - 2, 1);
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+    };
+
+    renderIncomeLevels = (message = '') => {
+      setupIncomeHistory();
+      const host = document.getElementById('incomeHistory');
+      if (!host) return;
+      normalizeIncomeLevels();
+      const levels = [...data.settings.incomeLevels]
+        .sort((a, b) => String(b.start).localeCompare(String(a.start)));
+      host.innerHTML = `<p class="eyebrow">INCOME HISTORY</p><h2>Kevin income levels</h2><div class="income-level-head"><span>Biweekly Paycheck Amount</span><span>From</span><span>Through</span><span></span></div><div>${levels.map((level, index) => {
+        const current = index === 0;
+        return `<div class="income-level-row"><input type="number" inputmode="decimal" aria-label="Biweekly Paycheck Amount" data-income-field="paycheck" data-income-id="${level.id}" value="${round(level.paycheck)}"><input type="month" aria-label="Income level start month" data-income-field="start" data-income-id="${level.id}" value="${level.start}">${current ? '<input class="income-level-current" type="text" aria-label="Income level end month" value="Current" readonly>' : `<input type="month" aria-label="Income level end month" data-income-field="end" data-income-id="${level.id}" value="${level.end}">`}<button type="button" class="income-level-remove" data-remove-income="${level.id}" aria-label="Remove income level" ${levels.length === 1 ? 'disabled' : ''}>×</button></div>`;
+      }).join('')}</div><div class="income-history-actions"><button type="button" class="button ghost" id="addIncomeLevel">+ Add income level</button><button type="button" class="button primary" id="applyIncomeHistory">Apply ranges to completed months</button></div><p class="income-history-notice">${message || 'Completed months stay fixed after they are applied; future completed months lock automatically.'}</p>`;
+    };
+
+    document.addEventListener('click', event => {
+      const add = event.target.closest('#addIncomeLevel');
+      if (!add) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      normalizeIncomeLevels();
+      const start = currentMonthKey();
+      const current = [...data.settings.incomeLevels]
+        .sort((a, b) => String(b.start).localeCompare(String(a.start)))[0];
+      if (current && !current.end) current.end = priorMonth(start);
+      data.settings.incomeLevels.push({
+        id: `income-${Date.now()}`,
+        start,
+        end: '',
+        paycheck: paycheckForMonth({ id:start, incomePaycheck:undefined })
+      });
+      syncLegacyMonthlyIncome();
+      save();
+      syncSettings();
+      render();
+    }, true);
+
+    render();
   })();
 </script>
 </body></html>
