@@ -539,4 +539,31 @@ const todayTodoRender=render;render=()=>{todayTodoRender();setupBackupTools();re
     });
   }
 </script>
+<script>
+  (() => {
+    const notesSvg = '<svg viewBox="0 0 14 14" aria-hidden="true"><path d="M14 9.87831V1.5C14 .671562 13.3284 0 12.5 0h-11C.671562 0 0 .671562 0 1.5v10.9996c0 .8285.671562 1.5 1.5 1.5h8.37869c.39781 0 .77931-.158 1.06061-.4393l2.6214-2.6213C13.842 10.6577 14 10.2761 14 9.87831ZM10 12.3783V9.99963h2.3787L10 12.3783ZM12.5 1.5v6.99963H9.25c-.41422 0-.75.33578-.75.75v3.24997H1.5V1.5h11Z" fill="currentColor"/></svg>';
+    const applyMonthNotesIcons = () => {
+      document.querySelectorAll('.monthly-table .notes-button').forEach(button => {
+        if (button.dataset.notesSvgApplied) return;
+        button.innerHTML = notesSvg;
+        button.dataset.notesSvgApplied = 'true';
+      });
+    };
+
+    // Capture this before any legacy handlers so the Notes modal always opens.
+    document.addEventListener('click', event => {
+      const button = event.target.closest?.('.monthly-table [data-notes-month]');
+      if (!button) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      openNotes(button.dataset.notesMonth);
+    }, true);
+
+    const monthsSection = document.getElementById('months');
+    if (monthsSection) {
+      new MutationObserver(applyMonthNotesIcons).observe(monthsSection, { childList: true, subtree: true });
+    }
+    applyMonthNotesIcons();
+  })();
+</script>
 </body></html>
