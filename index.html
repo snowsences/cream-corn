@@ -991,4 +991,207 @@ const todayTodoRender=render;render=()=>{todayTodoRender();setupBackupTools();re
     document.querySelector('#expenseEditCategoryOptions [data-edit-category="Bills"]')?.remove();
   })();
 </script>
+<style>
+  .chart-card-actions { display:flex; align-items:center; justify-content:flex-end; gap:8px; flex-wrap:wrap; }
+  .chart-average { color:var(--muted); font-size:14px; white-space:nowrap; }
+  .expense-settings-tabs { margin-top:20px; }
+  .settings-tab-list { display:flex; gap:8px; margin:0 0 16px; }
+  .settings-tab { border:1px solid var(--line); border-radius:8px; background:var(--soft); color:var(--muted); padding:8px 12px; font:inherit; cursor:pointer; }
+  .settings-tab.active { background:var(--orange); border-color:var(--orange); color:#10272b; }
+  .settings-tab-panel[hidden] { display:none!important; }
+  .fixed-expense-items { display:grid; gap:8px; }
+  .fixed-expense-row { display:grid; grid-template-columns:minmax(0,1fr) 116px 36px; gap:8px; align-items:center; }
+  .fixed-expense-remove { width:36px; height:36px; border:0; border-radius:8px; background:var(--soft); color:var(--muted); font:22px/1 Arial,sans-serif; cursor:pointer; }
+  .fixed-expense-remove:disabled { opacity:.35; cursor:not-allowed; }
+  .fixed-expense-actions { margin-top:12px; }
+  @media (min-width:681px) {
+    .top-header { padding-bottom:0!important; }
+    .top-header .brand-mark,
+    .top-header .brand-mark img { width:50px!important; height:50px!important; }
+    .top-header .brand-mark img { border-radius:16px; }
+    .main-nav .nav-tab.active:after { bottom:-1px!important; z-index:1; }
+  }
+  @media (max-width:680px) {
+    .app { padding-top:32px!important; }
+    .app > section:not(#settings) { margin-top:0!important; }
+    .todo-form textarea { height:50px!important; min-height:50px!important; padding:8px 16px!important; background:#fff!important; color:#10272b!important; line-height:32px!important; }
+    .todo-form textarea::placeholder { color:#5d7575!important; }
+    .todo-check { width:32px!important; height:32px!important; }
+    .todo-check span { width:28px!important; height:28px!important; border-radius:4px!important; }
+  }
+  .todo-form textarea { background:#fff!important; color:#10272b!important; display:block; }
+  .todo-check { width:32px!important; height:32px!important; }
+  .todo-check span { width:28px!important; height:28px!important; border-radius:4px!important; }
+</style>
+<script>
+  (() => {
+    // Light is the default only for devices that have not explicitly chosen a theme.
+    if (!localStorage.getItem('cream-corn-theme')) applyTheme('light');
+
+    chartCard = function(title, points, color, extra = '') {
+      const palette = {'#45b8b0':'#35b9b1','#e2ad4c':'#efb43b','#f0845c':'#4d96b7','#b28ad5':'#779fc2'};
+      const smoothed = rollingAverage(points);
+      const latest = smoothed.at(-1);
+      const average = points.length ? points.reduce((sum, point) => sum + num(point.value), 0) / points.length : 0;
+      return `<article class="chart-card"><div class="chart-card-head"><div><h3>${title}</h3><p class="chart-subtitle">3-month rolling average</p></div><div class="chart-card-actions"><span class="chart-average">Avg ${money(average)}</span>${extra}</div></div><p class="chart-value">Latest: ${money(latest?.value || 0)}</p>${chartSvg(smoothed, palette[color] || color)}</article>`;
+    };
+
+    const categoryPalette = { groceries:'#efb43b', dining:'#78b575', spending:'#4d96b7' };
+    const categoryMonths = () => chartMonths().map(month => {
+      const dining = round(data.entries.filter(entry => entry.month === month.id && entry.category === 'Shopping' && entry.subcategory === 'Dining').reduce((sum, entry) => sum + num(entry.final), 0));
+      return { ...month, groceries:num(month.groceries), dining, spendingOther:round(Math.max(0, num(month.spending) - dining)) };
+    });
+    const renderCategoryBarsWithoutExpenses = () => {
+      document.getElementById('categoryBarsChart')?.remove();
+      const months = categoryMonths();
+      const chart = document.createElement('article');
+      chart.id = 'categoryBarsChart';
+      chart.className = 'chart-card category-bars-chart';
+      if (!months.length) { chart.innerHTML = '<div class="chart-card-head"><div><h3>Spending by category</h3></div></div><div class="chart-empty">No monthly data yet.</div>'; chartArea.append(chart); return; }
+      const width=1040,height=360,left=58,right=20,top=22,bottom=56,plotWidth=width-left-right,plotHeight=height-top-bottom,maxValue=Math.max(1,...months.flatMap(month=>[month.groceries+month.dining,month.spendingOther])),tickStep=Math.max(100,Math.ceil(maxValue/4/100)*100),topTick=tickStep*4,y=value=>top+plotHeight-value/topTick*plotHeight,groupWidth=plotWidth/months.length,barWidth=Math.min(28,Math.max(12,groupWidth*.3)),foodGap=2,monthLabel=month=>`${monthLabels[Number(month.id.slice(5,7))-1].slice(0,3)} '${month.id.slice(2,4)}`;
+      const bars=months.map((month,index)=>{const center=left+groupWidth*index+groupWidth/2,foodX=center-barWidth-3,spendingX=center+3,groceryY=y(month.groceries),diningY=y(month.groceries+month.dining),groceryHeight=Math.max(0,top+plotHeight-groceryY),diningHeight=Math.max(0,top+plotHeight-diningY),spendingHeight=Math.max(0,top+plotHeight-y(month.spendingOther)),diningBarHeight=Math.max(0,diningHeight-(month.dining&&month.groceries?foodGap:0));return `<g class="category-bar-group"><rect class="category-bar" x="${foodX}" y="${groceryY}" width="${barWidth}" height="${groceryHeight}" fill="${categoryPalette.groceries}"><title>${month.label}\nGroceries: ${money(month.groceries)}</title></rect>${month.dining?`<rect class="category-bar" x="${foodX}" y="${diningY}" width="${barWidth}" height="${diningBarHeight}" fill="${categoryPalette.dining}"><title>${month.label}\nDining: ${money(month.dining)}</title></rect>`:''}<rect class="category-bar" x="${spendingX}" y="${y(month.spendingOther)}" width="${barWidth}" height="${spendingHeight}" fill="${categoryPalette.spending}"><title>${month.label}\nSpending: ${money(month.spendingOther)}</title></rect><text class="chart-axis-label category-bar-month" x="${center}" y="${height-20}" text-anchor="middle">${monthLabel(month)}</text></g>`}).join('');
+      const ticks=[0,1,2,3,4].map(index=>{const value=tickStep*index;return `<g><line class="chart-grid-line" x1="${left}" x2="${width-right}" y1="${y(value)}" y2="${y(value)}"/><text class="chart-axis-label" x="${left-10}" y="${y(value)+4}" text-anchor="end">${money(value)}</text></g>`}).join('');
+      chart.innerHTML=`<div class="chart-card-head"><div><h3>Spending by category</h3><p class="chart-subtitle">${chartRange==='all'?'All time':`${chartRange} year${chartRange==='1'?'':'s'}`}</p></div></div><div class="category-bar-viewport"><svg class="category-bar-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="Monthly spending by category, with dining and groceries, and other spending">${ticks}<line class="chart-axis" x1="${left}" x2="${width-right}" y1="${top+plotHeight}" y2="${top+plotHeight}"/>${bars}</svg></div><div class="category-bar-legend"><span><i style="background:${categoryPalette.groceries}"></i>Groceries</span><span><i style="background:${categoryPalette.dining}"></i>Dining</span><span><i style="background:${categoryPalette.spending}"></i>Spending</span></div>`;
+      chartArea.append(chart);
+    };
+    const priorChartRender = renderCharts;
+    renderCharts = () => { priorChartRender(); renderCategoryBarsWithoutExpenses(); };
+
+    let fixedItemsNeedSync = false;
+    const fixedItemTotal = () => round((data.settings.fixedExpenseItems || []).reduce((sum, item) => sum + num(item.amount), 0));
+    const normalizeFixedItems = () => {
+      if (!Array.isArray(data.settings.fixedExpenseItems) || !data.settings.fixedExpenseItems.length) { data.settings.fixedExpenseItems = [{ id:'base-fixed-expense', label:'Fixed monthly expenses', amount:num(data.settings.fixedExpenses) }]; fixedItemsNeedSync = true; }
+      data.settings.fixedExpenseItems = data.settings.fixedExpenseItems.map((item, index) => ({ id:item.id || `fixed-${index}`, label:String(item.label || 'Expense'), amount:num(item.amount) }));
+      data.settings.fixedExpenses = fixedItemTotal();
+    };
+    const setupExpenseSettingsTabs = () => {
+      const settingsPanel = document.querySelector('#settings .panel.settings');
+      const fixedInput = document.querySelector('[data-setting="fixedExpenses"]');
+      if (!settingsPanel || !fixedInput) return;
+      normalizeFixedItems();
+      if (fixedItemsNeedSync && firebaseUser) { save(); syncSettings(); fixedItemsNeedSync = false; }
+      let host = document.getElementById('expenseSettingsTabs');
+      if (!host) {
+        const fields = ['fixedExpenses','kevinMortgage','foodShare','meganR1','meganR2'].map(key => document.querySelector(`[data-setting="${key}"]`)?.closest('label')).filter(Boolean);
+        host = document.createElement('section');
+        host.id = 'expenseSettingsTabs';
+        host.className = 'expense-settings-tabs';
+        host.innerHTML = '<div class="settings-tab-list" role="tablist"><button type="button" class="settings-tab active" data-expense-settings-tab="one" role="tab" aria-selected="true">Expenses 1</button><button type="button" class="settings-tab" data-expense-settings-tab="two" role="tab" aria-selected="false">Expenses 2</button></div><div class="settings-tab-panel" data-expense-settings-panel="one"></div><div class="settings-tab-panel" data-expense-settings-panel="two" hidden></div>';
+        fields[0]?.before(host);
+        const firstPanel = host.querySelector('[data-expense-settings-panel="one"]');
+        fields.forEach(field => firstPanel.append(field));
+        fixedInput.disabled = true;
+        fixedInput.setAttribute('aria-describedby','fixedExpensesHelp');
+        const helper = document.createElement('p'); helper.id = 'fixedExpensesHelp'; helper.className = 'small'; helper.textContent = 'Calculated from Expenses 2.'; fixedInput.closest('label').append(helper);
+        host.addEventListener('click', event => {
+          const tab = event.target.closest('[data-expense-settings-tab]');
+          if (tab) { const choice=tab.dataset.expenseSettingsTab; host.querySelectorAll('[data-expense-settings-tab]').forEach(button=>{const active=button===tab;button.classList.toggle('active',active);button.setAttribute('aria-selected',String(active));}); host.querySelectorAll('[data-expense-settings-panel]').forEach(panel=>panel.hidden=panel.dataset.expenseSettingsPanel!==choice); return; }
+          if (event.target.closest('[data-add-fixed-expense]')) { data.settings.fixedExpenseItems.push({id:`fixed-${crypto.randomUUID()}`,label:'New expense',amount:0}); data.settings.fixedExpenses=fixedItemTotal(); save(); syncSettings(); render(); return; }
+          const remove = event.target.closest('[data-remove-fixed-expense]');
+          if (remove) { data.settings.fixedExpenseItems=data.settings.fixedExpenseItems.filter(item=>item.id!==remove.dataset.removeFixedExpense); data.settings.fixedExpenses=fixedItemTotal(); save(); syncSettings(); render(); }
+        });
+        host.addEventListener('change', event => { const input=event.target.closest('[data-fixed-expense-field]'); if (!input) return; const item=data.settings.fixedExpenseItems.find(entry=>entry.id===input.dataset.fixedExpenseId); if (!item) return; item[input.dataset.fixedExpenseField]=input.dataset.fixedExpenseField==='amount'?num(input.value):input.value.trim(); data.settings.fixedExpenses=fixedItemTotal(); save(); syncSettings(); render(); });
+      }
+      fixedInput.value=round(data.settings.fixedExpenses);
+      const secondPanel=host.querySelector('[data-expense-settings-panel="two"]');
+      secondPanel.innerHTML=`<p class="small">These values add up to Fixed monthly expenses.</p><div class="fixed-expense-items">${data.settings.fixedExpenseItems.map(item=>`<div class="fixed-expense-row"><input type="text" aria-label="Expense name" data-fixed-expense-field="label" data-fixed-expense-id="${item.id}" value="${escapeTodo(item.label)}"><input type="number" inputmode="decimal" aria-label="Expense amount" data-fixed-expense-field="amount" data-fixed-expense-id="${item.id}" value="${round(item.amount)}"><button type="button" class="fixed-expense-remove" data-remove-fixed-expense="${item.id}" aria-label="Remove ${escapeTodo(item.label)}" ${data.settings.fixedExpenseItems.length===1?'disabled':''}>×</button></div>`).join('')}</div><div class="fixed-expense-actions"><button type="button" class="button ghost" data-add-fixed-expense>+ Add expense</button></div>`;
+    };
+    const settingsRender = render;
+    render = () => { settingsRender(); setupExpenseSettingsTabs(); };
+    render();
+  })();
+</script>
+<style>
+  #settings > .grid.settings-panel-stack { display:grid!important; grid-template-columns:minmax(0,1fr)!important; gap:16px!important; max-width:none!important; }
+  #settings .settings-display,
+  #settings .settings-sync,
+  #settings .settings-backup,
+  #settings .settings-budget { width:100%; }
+  #settings .settings-panel-heading { margin:0 0 16px; }
+  #settings .settings-panel-heading .eyebrow { margin:0 0 4px; }
+  #settings .settings-panel-heading h2 { margin:0; }
+  #settings .settings-panel-heading .small { margin:6px 0 0; }
+  #settings .settings-budget > .eyebrow { display:none; }
+  #settings .settings-budget > h2 { margin:0; }
+  #settings .settings-budget > .small { margin:6px 0 16px; }
+  #settings .budget-settings-divider { border:0; border-top:1px solid var(--line); margin:24px 0; }
+  #settings .settings-display .display-mode-control { margin:20px 0 0; }
+  #settings .settings-backup .backup-section { margin:0!important; padding:0!important; border:0!important; }
+  #settings .settings-backup .backup-section > .eyebrow,
+  #settings .settings-backup .backup-section > h2,
+  #settings .settings-backup .backup-section > .small { display:none; }
+  #settings .settings-backup .backup-section .toolbar { margin:0!important; }
+  #settings .settings-sync #firebaseSignOut.hidden,
+  #settings .settings-sync #firebaseSignIn.hidden { display:none!important; }
+</style>
+<script>
+  (() => {
+    const panelHeading = (eyebrow, title, description = '') => {
+      const heading = document.createElement('div');
+      heading.className = 'settings-panel-heading';
+      heading.innerHTML = `<p class="eyebrow">${eyebrow}</p><h2>${title}</h2>${description ? `<p class="small">${description}</p>` : ''}`;
+      return heading;
+    };
+    const refreshSyncPanel = () => {
+      const signedIn = firebaseUser?.uid === ownerUid;
+      document.getElementById('firebaseSignIn')?.classList.toggle('hidden', signedIn);
+      document.getElementById('firebaseSignOut')?.classList.toggle('hidden', !signedIn);
+    };
+    const organizeSettingsPanels = () => {
+      const settings = document.getElementById('settings');
+      const stack = settings?.querySelector(':scope > .grid');
+      const budget = stack?.querySelector('.panel.settings');
+      const sync = document.getElementById('firebaseStatus')?.closest('.panel');
+      if (!stack || !budget || !sync) return;
+      stack.classList.add('settings-panel-stack');
+      budget.classList.add('settings-budget');
+      const budgetTitle = budget.querySelector(':scope > h2');
+      if (budgetTitle) budgetTitle.textContent = 'Budget Settings';
+      sync.classList.add('settings-sync');
+      const syncEyebrow = sync.querySelector('.eyebrow');
+      const syncTitle = sync.querySelector('h2');
+      const syncDescription = sync.querySelector('.small:not(#firebaseStatus)');
+      if (syncEyebrow) syncEyebrow.textContent = 'SYNC';
+      if (syncTitle) syncTitle.textContent = 'Sync';
+      if (syncDescription) syncDescription.textContent = 'Sign in with your authorized Google account to keep Estuary in sync across your devices.';
+
+      let display = document.getElementById('displaySettingsPanel');
+      if (!display) {
+        display = document.createElement('article');
+        display.id = 'displaySettingsPanel';
+        display.className = 'panel settings-display';
+        display.append(panelHeading('DISPLAY', 'Display'));
+      }
+      const appearance = document.getElementById('themeSettingsToggle')?.closest('div');
+      const displayMode = document.querySelector('.display-mode-control');
+      if (appearance) display.append(appearance);
+      if (displayMode) display.append(displayMode);
+
+      let backup = document.getElementById('backupSettingsPanel');
+      if (!backup) {
+        backup = document.createElement('article');
+        backup.id = 'backupSettingsPanel';
+        backup.className = 'panel settings-backup';
+        backup.append(panelHeading('BACKUP & RESTORE', 'Backup & Restore', 'Download an encrypted backup or restore one when needed.'));
+      }
+      const backupTools = document.getElementById('backupSection');
+      if (backupTools) backup.append(backupTools);
+
+      const expenseTabs = document.getElementById('expenseSettingsTabs');
+      const incomeHistory = document.getElementById('incomeHistory');
+      if (expenseTabs && incomeHistory) {
+        let divider = budget.querySelector('.budget-settings-divider');
+        if (!divider) { divider = document.createElement('hr'); divider.className = 'budget-settings-divider'; }
+        budget.append(expenseTabs, divider, incomeHistory);
+      }
+      stack.replaceChildren(display, sync, backup, budget);
+      refreshSyncPanel();
+    };
+    const settingsLayoutRender = render;
+    render = () => { settingsLayoutRender(); organizeSettingsPanels(); };
+    const settingsUserHandler = onFirebaseUser;
+    onFirebaseUser = async user => { await settingsUserHandler(user); organizeSettingsPanels(); };
+    organizeSettingsPanels();
+  })();
+</script>
 </body></html>
