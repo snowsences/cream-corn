@@ -1221,12 +1221,12 @@ const todayTodoRender=render;render=()=>{todayTodoRender();setupBackupTools();re
       host.innerHTML = `<p class="eyebrow">INCOME HISTORY</p><h2>Kevin income levels</h2><div class="income-level-head"><span>Biweekly Paycheck Amount</span><span>From</span><span>Through</span><span></span></div><div>${levels.map((level, index) => {
         const current = index === 0;
         return `<div class="income-level-row"><input type="number" inputmode="decimal" aria-label="Biweekly Paycheck Amount" data-income-field="paycheck" data-income-id="${level.id}" value="${round(level.paycheck)}"><input type="month" aria-label="Income level start month" data-income-field="start" data-income-id="${level.id}" value="${level.start}">${current ? '<input class="income-level-current" type="text" aria-label="Income level end month" value="Current" readonly>' : `<input type="month" aria-label="Income level end month" data-income-field="end" data-income-id="${level.id}" value="${level.end}">`}<button type="button" class="income-level-remove" data-remove-income="${level.id}" aria-label="Remove income level" ${levels.length === 1 ? 'disabled' : ''}>×</button></div>`;
-      }).join('')}</div><div class="income-history-actions"><button type="button" class="button ghost" id="addIncomeLevel">+ Add income level</button><button type="button" class="button primary" id="applyIncomeHistory">Apply ranges to completed months</button></div><p class="income-history-notice">${message || 'Completed months stay fixed after they are applied; future completed months lock automatically.'}</p>`;
+      }).join('')}</div><div class="income-history-actions"><button type="button" class="button ghost" id="addIncomeLevel" data-income-level-bound="true" onclick="window.addIncomeLevel(event)">+ Add income level</button><button type="button" class="button primary" id="applyIncomeHistory">Apply ranges to completed months</button></div><p class="income-history-notice">${message || 'Completed months stay fixed after they are applied; future completed months lock automatically.'}</p>`;
     };
 
     document.addEventListener('click', event => {
       const add = event.target.closest('#addIncomeLevel');
-      if (!add) return;
+      if (!add || add.dataset.incomeLevelBound) return;
       event.preventDefault();
       event.stopImmediatePropagation();
       normalizeIncomeLevels();
@@ -1246,6 +1246,124 @@ const todayTodoRender=render;render=()=>{todayTodoRender();setupBackupTools();re
       render();
     }, true);
 
+    render();
+  })();
+</script>
+<style>
+  .overview-insights { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin:0 0 16px; padding:12px; border:1px solid var(--line); border-radius:8px; background:var(--soft); }
+  .overview-insight { margin:0; color:var(--ink); font-size:15px; line-height:1.35; }
+  .overview-insight b { color:var(--orange); }
+  @media (max-width:680px) { .overview-insights { grid-template-columns:1fr; gap:10px; } }
+</style>
+<script>
+  (() => {
+    const overview = document.getElementById('overview');
+    const metricsNode = document.getElementById('metrics');
+    const insights = document.createElement('aside');
+    insights.id = 'overviewInsights';
+    insights.className = 'overview-insights hidden';
+    metricsNode?.before(insights);
+
+    const renderInsights = () => {
+      if (!insights) return;
+      const current = currentMonthKey();
+      const completed = data.months.filter(month => month.id < current).sort((a,b) => a.id.localeCompare(b.id));
+      const latest = completed.at(-1);
+      if (!latest) { insights.classList.add('hidden'); return; }
+      const messages = [];
+      const previousThree = completed.slice(-4, -1);
+      if (previousThree.length === 3) {
+        const average = previousThree.reduce((sum, month) => sum + num(month.spending), 0) / previousThree.length;
+        const difference = round(num(latest.spending) - average);
+        if (Math.abs(difference) >= 1) messages.push(`Spending in <b>${monthLabels[Number(latest.id.slice(5,7))-1].slice(0,3)}</b> is <b>${money(Math.abs(difference))}</b> ${difference < 0 ? 'below' : 'above'} your three-month average.`);
+      }
+      const sameMonthLastYear = data.months.find(month => month.id === `${Number(latest.id.slice(0,4)) - 1}-${latest.id.slice(5)}`);
+      if (sameMonthLastYear && num(sameMonthLastYear.groceries) > 0) {
+        const change = round((num(latest.groceries) - num(sameMonthLastYear.groceries)) / num(sameMonthLastYear.groceries) * 100);
+        if (change) messages.push(`Food is <b>${Math.abs(change)}%</b> ${change > 0 ? 'above' : 'below'} last ${monthLabels[Number(latest.id.slice(5,7))-1]}.`);
+      }
+      const year = Number(latest.id.slice(0,4));
+      const cutoff = latest.id.slice(5);
+      const savedToDate = data.months.filter(month => month.id.startsWith(`${year}-`) && month.id.slice(5) <= cutoff).reduce((sum, month) => sum + total(month).saved, 0);
+      const savedLastYear = data.months.filter(month => month.id.startsWith(`${year - 1}-`) && month.id.slice(5) <= cutoff).reduce((sum, month) => sum + total(month).saved, 0);
+      if (savedLastYear || savedToDate) {
+        const difference = round(savedToDate - savedLastYear);
+        if (difference) messages.push(`You've saved <b>${money(Math.abs(difference))}</b> ${difference > 0 ? 'more' : 'less'} than this point last year.`);
+      }
+      insights.innerHTML = messages.slice(0, 3).map(message => `<p class="overview-insight">${message}</p>`).join('');
+      insights.classList.toggle('hidden', !messages.length);
+    };
+
+    const insightRender = render;
+    render = () => { insightRender(); renderInsights(); };
+
+    window.addIncomeLevel = event => {
+      event?.preventDefault();
+      event?.stopPropagation();
+      normalizeIncomeLevels();
+      const start = currentMonthKey();
+      const levels = [...data.settings.incomeLevels].sort((a,b) => String(b.start).localeCompare(String(a.start)));
+      const current = levels[0];
+      if (current && !current.end) {
+        const [year, month] = start.split('-').map(Number);
+        const date = new Date(year, month - 2, 1);
+        current.end = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+      }
+      data.settings.incomeLevels.push({ id:`income-${Date.now()}`, start, end:'', paycheck:paycheckForMonth({id:start, incomePaycheck:undefined}) });
+      syncLegacyMonthlyIncome();
+      save();
+      syncSettings();
+      render();
+      const notice = document.querySelector('.income-history-notice');
+      if (notice) notice.textContent = 'New income level added. Set its paycheck amount and start month.';
+    };
+
+    const bindIncomeLevelButton = () => {
+      const button = document.getElementById('addIncomeLevel');
+      if (!button) return;
+      button.dataset.incomeLevelBound = 'true';
+      button.onclick = window.addIncomeLevel;
+    };
+    const incomeButtonRender = render;
+    render = () => { incomeButtonRender(); bindIncomeLevelButton(); };
+    render();
+  })();
+</script>
+<style>
+  #settings .settings-install { width:100%; }
+  #settings .settings-install .install-banner { position:static!important; transform:none!important; display:flex!important; width:100%!important; padding:0!important; border:0!important; border-radius:0!important; background:transparent!important; box-shadow:none!important; }
+  #settings .settings-install .install-banner > span { display:none; }
+  #settings .settings-install .install-banner > div { width:100%; justify-content:flex-end; }
+  #settings .settings-install .install-dismiss { display:none!important; }
+  #settings .settings-install .button[disabled] { opacity:.55; cursor:not-allowed; }
+</style>
+<script>
+  (() => {
+    const installBanner = document.getElementById('installBanner');
+    const installButton = document.getElementById('installApp');
+    const settingsStack = () => document.querySelector('#settings > .grid');
+    const installPanel = document.createElement('article');
+    installPanel.id = 'installSettingsPanel';
+    installPanel.className = 'panel settings-install';
+    installPanel.innerHTML = '<p class="eyebrow">INSTALL APP</p><h2>Estuary on this device</h2><p class="small" id="installSettingsStatus">Chrome will make installation available when this device is eligible.</p>';
+    if (installBanner) {
+      installBanner.classList.remove('hidden');
+      installPanel.append(installBanner);
+    }
+    const placeInstallPanel = () => settingsStack()?.append(installPanel);
+    const updateInstallStatus = () => {
+      const status = document.getElementById('installSettingsStatus');
+      if (!status || !installButton) return;
+      const ready = Boolean(deferredInstallPrompt);
+      installButton.disabled = !ready;
+      status.textContent = ready ? 'Install Estuary for faster access from your home screen.' : 'Chrome will make installation available when this device is eligible.';
+    };
+    const baseInstallRender = render;
+    render = () => { baseInstallRender(); placeInstallPanel(); updateInstallStatus(); };
+    window.addEventListener('beforeinstallprompt', () => { placeInstallPanel(); updateInstallStatus(); });
+    window.addEventListener('appinstalled', () => { placeInstallPanel(); updateInstallStatus(); });
+    const originalInstallClick = installButton?.onclick;
+    if (installButton) installButton.onclick = async event => { await originalInstallClick?.(event); placeInstallPanel(); updateInstallStatus(); };
     render();
   })();
 </script>
