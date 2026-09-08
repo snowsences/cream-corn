@@ -1464,4 +1464,80 @@ const todayTodoRender=render;render=()=>{todayTodoRender();setupBackupTools();re
     render();
   })();
 </script>
+<script>
+  (() => {
+    const categoryPalette = { groceries:'#efb43b', dining:'#78b575', spending:'#4d96b7', travel:'#779fc2' };
+    const categoryMonthsWithTravel = () => chartMonths().map(month => {
+      const entryTotal = subcategory => round(data.entries
+        .filter(entry => entry.month === month.id && entry.category === 'Shopping' && entry.subcategory === subcategory)
+        .reduce((sum, entry) => sum + num(entry.final), 0));
+      const dining = entryTotal('Dining');
+      const travel = entryTotal('Travel');
+      return { ...month, groceries:num(month.groceries), dining, travel, spendingOther:round(Math.max(0, num(month.spending) - dining - travel)) };
+    });
+    const renderCategoryBarsWithTravel = () => {
+      document.getElementById('categoryBarsChart')?.remove();
+      const months = categoryMonthsWithTravel();
+      const chart = document.createElement('article');
+      chart.id = 'categoryBarsChart';
+      chart.className = 'chart-card category-bars-chart';
+      const chartAreaEl = document.getElementById('chartArea');
+      if (!chartAreaEl) return;
+      if (!months.length) { chart.innerHTML = '<div class="chart-card-head"><div><h3>Spending by category</h3></div></div><div class="chart-empty">No monthly data yet.</div>'; chartAreaEl.append(chart); return; }
+      const height=360,left=58,right=20,top=22,bottom=56,minGroupWidth=96;
+      const width=Math.max(1040, left+right+months.length*minGroupWidth);
+      const plotWidth=width-left-right,plotHeight=height-top-bottom;
+      const maxValue=Math.max(1,...months.flatMap(month=>[month.groceries+month.dining,month.spendingOther,month.travel]));
+      const tickStep=Math.max(100,Math.ceil(maxValue/4/100)*100),topTick=tickStep*4;
+      const y=value=>top+plotHeight-value/topTick*plotHeight,groupWidth=plotWidth/months.length,barWidth=26,gap=6,foodGap=2;
+      const monthLabel=month=>({name:monthLabels[Number(month.id.slice(5,7))-1].slice(0,3),year:month.id.slice(2,4)});
+      const bars=months.map((month,index)=>{
+        const center=left+groupWidth*index+groupWidth/2,foodX=center-(barWidth*1.5+gap),spendingX=foodX+barWidth+gap,travelX=spendingX+barWidth+gap;
+        const groceryY=y(month.groceries),diningY=y(month.groceries+month.dining),groceryHeight=Math.max(0,top+plotHeight-groceryY),diningHeight=Math.max(0,top+plotHeight-diningY),spendingHeight=Math.max(0,top+plotHeight-y(month.spendingOther)),travelHeight=Math.max(0,top+plotHeight-y(month.travel)),diningBarHeight=Math.max(0,diningHeight-(month.dining&&month.groceries?foodGap:0)),label=monthLabel(month);
+        return `<g class="category-bar-group"><rect class="category-bar" x="${foodX}" y="${groceryY}" width="${barWidth}" height="${groceryHeight}" fill="${categoryPalette.groceries}"><title>${month.label}\nGroceries: ${money(month.groceries)}</title></rect>${month.dining?`<rect class="category-bar" x="${foodX}" y="${diningY}" width="${barWidth}" height="${diningBarHeight}" fill="${categoryPalette.dining}"><title>${month.label}\nDining: ${money(month.dining)}</title></rect>`:''}<rect class="category-bar" x="${spendingX}" y="${y(month.spendingOther)}" width="${barWidth}" height="${spendingHeight}" fill="${categoryPalette.spending}"><title>${month.label}\nSpending: ${money(month.spendingOther)}</title></rect>${month.travel?`<rect class="category-bar" x="${travelX}" y="${y(month.travel)}" width="${barWidth}" height="${travelHeight}" fill="${categoryPalette.travel}"><title>${month.label}\nTravel: ${money(month.travel)}</title></rect>`:''}<text class="chart-axis-label category-bar-month" x="${center}" y="${height-31}" text-anchor="middle"><tspan x="${center}">${label.name}</tspan><tspan x="${center}" dy="13">${label.year}</tspan></text></g>`;
+      }).join('');
+      const ticks=[0,1,2,3,4].map(index=>{const value=tickStep*index;return `<g><line class="chart-grid-line" x1="${left}" x2="${width-right}" y1="${y(value)}" y2="${y(value)}"/><text class="chart-axis-label" x="${left-10}" y="${y(value)+4}" text-anchor="end">${money(value)}</text></g>`}).join('');
+      chart.innerHTML=`<div class="chart-card-head"><div><h3>Spending by category</h3><p class="chart-subtitle">${chartRange==='all'?'All time':`${chartRange} year${chartRange==='1'?'':'s'}`}</p></div></div><div class="category-bar-viewport"><svg class="category-bar-svg" style="width:${width}px;min-width:${width}px" viewBox="0 0 ${width} ${height}" role="img" aria-label="Monthly spending by category, with dining and groceries, spending, and travel">${ticks}<line class="chart-axis" x1="${left}" x2="${width-right}" y1="${top+plotHeight}" y2="${top+plotHeight}"/>${bars}</svg></div><div class="category-bar-legend"><span><i style="background:${categoryPalette.groceries}"></i>Groceries</span><span><i style="background:${categoryPalette.dining}"></i>Dining</span><span><i style="background:${categoryPalette.spending}"></i>Spending</span><span><i style="background:${categoryPalette.travel}"></i>Travel</span></div>`;
+      chartAreaEl.append(chart);
+    };
+    const previousRenderCharts = renderCharts;
+    renderCharts = () => { previousRenderCharts(); renderCategoryBarsWithTravel(); };
+    render();
+  })();
+</script>
+<script>
+  (() => {
+    const checkIcon = '<svg class="todo-check-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5 9.4 17 19 7"/></svg>';
+    const editIcon = '<svg viewBox="0 0 21 21" aria-hidden="true"><path d="M20.2312.768845c-1.0252-1.025127-2.6872-1.025127-3.7123 0L15.3617 1.926 19.074 5.63831l1.1572-1.15715c1.0251-1.02513 1.0251-2.68719 0-3.712315Z" fill="currentColor"/><path d="m18.0134 6.69897-3.7124-3.71231L2.15021 15.1375c-.61679.6168-1.07018 1.3775-1.319198 2.2135l-.79978 2.6849c-.07862.2639-.00627.5497.188456.7444.19473.1948.48052.2671.74445.1885l2.68489-.7998c.83597-.249 1.59672-.7024 2.21351-1.3192L18.0134 6.69897Z" fill="currentColor"/></svg>';
+    const chevron = '<svg class="todo-done-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>';
+    renderTodos = () => {
+      const list = document.getElementById('todoEntries');
+      if (!list) return;
+      const card = todo => `<article class="todo-card ${todo.done?'done':''}"><label class="todo-check" aria-label="Mark ${escapeTodo(todo.text)} ${todo.done?'active':'done'}"><input type="checkbox" data-todo-check="${todo.id}" ${todo.done?'checked':''}><span aria-hidden="true">${checkIcon}</span></label><div class="todo-copy"><p>${escapeTodo(todo.text)}</p></div><button type="button" class="todo-edit" data-edit-todo="${todo.id}" aria-label="Edit ${escapeTodo(todo.text)}">${editIcon}</button></article>`;
+      const dateAscending = (a,b) => String(a).localeCompare(String(b));
+      const alpha = (a,b) => String(a.text).localeCompare(String(b.text), undefined, {sensitivity:'base'});
+      const active = data.todos.filter(todo => !todo.done);
+      const dates = [...new Set(active.map(todo => todo.date))].sort(dateAscending);
+      const activeGroups = dates.map(date => {
+        const items = active.filter(todo => todo.date === date).sort(alpha);
+        return `<section class="todo-date-group"><h3>${displayTodoDate(date)}</h3><div class="todo-stack">${items.map(card).join('')}</div></section>`;
+      }).join('');
+      const done = [...data.todos.filter(todo => todo.done)].sort((a,b) => dateAscending(a.date,b.date) || alpha(a,b));
+      const empty = '<div class="chart-empty">Nothing here yet.</div>';
+      list.innerHTML = `<section class="todo-group"><h2>Active</h2>${activeGroups||empty}</section><details class="todo-group todo-done"><summary><h2>Done</h2><span class="todo-done-actions">${done.length?'<button type="button" class="todo-clear-done" data-clear-done>Clear All</button>':''}${chevron}</span></summary><div class="todo-stack">${done.length?done.map(card).join(''):empty}</div></details>`;
+    };
+    render();
+  })();
+</script>
+<style>
+  @media (max-width:680px) {
+    .app { padding:16px 16px 160px!important; padding-top:16px!important; }
+    .header-actions { padding-left:16px!important; padding-right:16px!important; }
+    .year-timeline { margin-left:-16px!important; margin-right:-16px!important; padding-left:16px!important; padding-right:16px!important; scroll-padding-inline:16px!important; }
+    #expenseDialog .dialog-inner { padding:16px 16px 0!important; }
+    #expenseDialog .dialog-inner > .toolbar.modal-actions { width:calc(100% + 32px)!important; margin:0 -16px!important; padding:16px max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left))!important; }
+    .notes-dialog,.todo-edit-dialog,.expense-edit-dialog,.megan-reminder-dialog { width:calc(100vw - 32px)!important; }
+    .notes-dialog .dialog-inner,.todo-edit-dialog .dialog-inner,.expense-edit-dialog .dialog-inner,.megan-reminder-dialog .dialog-inner { padding:16px!important; }
+  }
+</style>
 </body></html>
