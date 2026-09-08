@@ -1540,4 +1540,60 @@ const todayTodoRender=render;render=()=>{todayTodoRender();setupBackupTools();re
     .notes-dialog .dialog-inner,.todo-edit-dialog .dialog-inner,.expense-edit-dialog .dialog-inner,.megan-reminder-dialog .dialog-inner { padding:16px!important; }
   }
 </style>
+<script>
+  (() => {
+    const actionButton = document.getElementById('addExpense');
+    const todosSection = document.getElementById('todos');
+    const editForm = document.getElementById('todoEditForm');
+    const title = editForm?.querySelector('h2');
+    const submitButton = editForm?.querySelector('button[type="submit"]');
+    const inlineForm = document.getElementById('todoForm');
+    inlineForm?.remove();
+
+    const inTodos = () => todosSection && !todosSection.classList.contains('hidden');
+    const setTodoModalMode = mode => {
+      if (!title || !submitButton) return;
+      const adding = mode === 'add';
+      title.textContent = adding ? 'Add to-do' : 'Edit to-do';
+      submitButton.textContent = adding ? 'Add' : 'Save';
+    };
+    const syncGlobalAction = () => {
+      if (!actionButton) return;
+      actionButton.textContent = inTodos() ? '+ Add To-Do' : '+ Add Expense';
+      actionButton.setAttribute('aria-label', inTodos() ? 'Add To-Do' : 'Add Expense');
+    };
+    const openTodoCreate = () => {
+      editingTodoId = '';
+      setTodoModalMode('add');
+      todoEditText.value = '';
+      todoEditDate.value = localDateKey();
+      todoEditDialog.showModal();
+      todoEditText.focus();
+    };
+
+    actionButton?.addEventListener('click', event => {
+      if (!inTodos()) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      openTodoCreate();
+    }, true);
+    document.addEventListener('click', event => {
+      if (event.target.closest('[data-tab]')) requestAnimationFrame(syncGlobalAction);
+      if (event.target.closest('[data-edit-todo]')) setTodoModalMode('edit');
+    });
+    editForm?.addEventListener('submit', event => {
+      if (editingTodoId) return;
+      event.preventDefault();
+      const text = todoEditText.value.trim().slice(0,500), date = todoEditDate.value;
+      if (!text || !date) return;
+      const todo = { id:crypto.randomUUID(), text, date, done:false, createdAt:new Date().toISOString() };
+      data.todos.unshift(todo);
+      save();
+      syncTodo(todo);
+      todoEditDialog.close();
+      render();
+    });
+    syncGlobalAction();
+  })();
+</script>
 </body></html>
