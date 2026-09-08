@@ -175,7 +175,7 @@ function renderMonthlyTimeline(){const timeline=document.getElementById('yearTim
 const timelineRender=render;render=()=>{timelineRender();renderMonthlyTimeline()};document.getElementById('closeNotes').onclick=()=>notesDialog.close();document.querySelectorAll('dialog').forEach(modal=>modal.addEventListener('click',event=>{if(event.target===modal)modal.close()}));
 function applyDisplayMode(){document.documentElement.classList.toggle('display-mode',displayMode);document.querySelectorAll('input[type="number"],input[type="date"],input[data-display-original-type]').forEach(input=>{if(displayMode){if(input.dataset.displayOriginalType)return;input.dataset.displayOriginalType=input.type;input.dataset.displayRawValue=input.value;input.type='text';input.readOnly=true;input.value=maskDigits(input.value)}else if(input.dataset.displayOriginalType){const value=input.dataset.displayRawValue;input.type=input.dataset.displayOriginalType;input.value=value;input.readOnly=false;delete input.dataset.displayOriginalType;delete input.dataset.displayRawValue}});if(!displayMode)return;const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode(node){const parent=node.parentElement;return parent&&['SCRIPT','STYLE'].includes(parent.tagName)?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT}});let node;while(node=walker.nextNode())node.nodeValue=maskDigits(node.nodeValue)}
 const displayControl=document.createElement('label');displayControl.className='display-mode-control';displayControl.innerHTML='<span><b>Display Mode</b><small>Obscure numeric data on this device</small></span><span class="display-switch"><input id="displayModeToggle" type="checkbox" aria-label="Toggle Display Mode"><i></i></span>';document.querySelector('#settings .panel.settings').append(displayControl);const displayModeToggle=document.getElementById('displayModeToggle');displayModeToggle.checked=displayMode;displayModeToggle.onchange=()=>{displayMode=displayModeToggle.checked;localStorage.setItem('cream-corn-display-mode',displayMode?'on':'off');render()};const displayRender=render;render=()=>{displayRender();applyDisplayMode()};let deferredInstallPrompt=null;const installBanner=document.getElementById('installBanner');window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();deferredInstallPrompt=event;installBanner.classList.remove('hidden')});document.getElementById('installApp').onclick=async()=>{if(!deferredInstallPrompt)return;deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;installBanner.classList.add('hidden')};document.getElementById('dismissInstall').onclick=()=>installBanner.classList.add('hidden');window.addEventListener('appinstalled',()=>{deferredInstallPrompt=null;installBanner.classList.add('hidden')});render();
-function normalizeIncomeLevels(){const settings=data.settings,legacyPaycheck=round(num(settings.monthlyIncome)*12/26),earliest=data.months.at(0)?.id||'';if(!Array.isArray(settings.incomeLevels)||!settings.incomeLevels.length)settings.incomeLevels=[{id:'legacy-income',start:earliest,end:'',paycheck:legacyPaycheck}];settings.incomeLevels=settings.incomeLevels.map((level,index)=>({id:level.id||`income-${index}`,start:String(level.start||''),end:String(level.end||''),paycheck:num(level.paycheck)}));const legacy=settings.incomeLevels.find(level=>level.id==='legacy-income');if(legacy&&earliest&&(!legacy.start||earliest<legacy.start))legacy.start=earliest;if(!Number.isFinite(Number(settings.monthlyIncome)))settings.monthlyIncome=round(legacyPaycheck*26/12)}
+function normalizeIncomeLevels(){const settings=data.settings,legacyPaycheck=round(num(settings.monthlyIncome)*12/26),earliest=data.months.at(0)?.id||'';if(!Array.isArray(settings.incomeLevels)||!settings.incomeLevels.length)settings.incomeLevels=[{id:'legacy-income',start:earliest,end:'',paycheck:legacyPaycheck}];settings.incomeLevels=settings.incomeLevels.map((level,index)=>({id:level.id||`income-${index}`,start:String(level.start||''),end:String(level.end||''),paycheck:num(level.paycheck)}));const legacy=settings.incomeLevels.find(level=>level.id==='legacy-income');if(legacy&&earliest&&!legacy.start)legacy.start=earliest;if(!Number.isFinite(Number(settings.monthlyIncome)))settings.monthlyIncome=round(legacyPaycheck*26/12)}
 function incomeLevelForMonth(monthId){normalizeIncomeLevels();return [...data.settings.incomeLevels].sort((a,b)=>String(b.start).localeCompare(String(a.start))).find(level=>(!level.start||level.start<=monthId)&&(!level.end||level.end>=monthId))}
 function paycheckForMonth(month){if(Number.isFinite(Number(month.incomePaycheck)))return num(month.incomePaycheck);return num(incomeLevelForMonth(month.id)?.paycheck)||round(num(data.settings.monthlyIncome)*12/26)}
 function monthlyIncomeForMonth(month){return round(paycheckForMonth(month)*26/12)}
@@ -1364,6 +1364,83 @@ const todayTodoRender=render;render=()=>{todayTodoRender();setupBackupTools();re
     window.addEventListener('appinstalled', () => { placeInstallPanel(); updateInstallStatus(); });
     const originalInstallClick = installButton?.onclick;
     if (installButton) installButton.onclick = async event => { await originalInstallClick?.(event); placeInstallPanel(); updateInstallStatus(); };
+    render();
+  })();
+</script>
+<style>
+  .overview-insight b { color:#35b9b1!important; }
+  .metric,.panel,.chart-card,.year-timeline button,.year-table,.table-wrap,.history-entry,.todo-card,.utility-alert,.overview-insights,.today-todo-banner,.install-banner { box-shadow:0 1px 3px 0 rgba(0,0,0,.1); }
+  .income-level-row .income-level-paycheck > span,.income-level-dates > label > span { display:none; }
+  .income-level-row .income-level-paycheck { min-width:0; }
+  .income-level-row .income-level-paycheck input,.income-level-row .income-level-dates input { width:100%; }
+  .income-level-row .income-level-dates { display:contents; }
+  @media (max-width:680px) {
+    .income-level-head { display:none!important; }
+    .income-level-row { display:grid!important; grid-template-columns:minmax(0,1fr) 42px!important; gap:8px!important; margin:0 0 16px!important; align-items:stretch!important; }
+    .income-level-row .income-level-paycheck { grid-column:1; grid-row:1; display:grid; gap:4px; }
+    .income-level-row .income-level-dates { grid-column:1; grid-row:2; display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .income-level-row .income-level-paycheck > span,.income-level-dates > label > span { display:block; color:var(--muted); font-size:12px; font-weight:700; }
+    .income-level-dates > label { display:grid; gap:4px; min-width:0; }
+    .income-level-row .income-level-remove { grid-column:2!important; grid-row:1 / span 2!important; width:42px!important; height:auto!important; min-height:100%!important; align-self:stretch!important; }
+  }
+</style>
+<script>
+  (() => {
+    const monthBefore = monthId => {
+      const [year, month] = monthId.split('-').map(Number);
+      const date = new Date(year, month - 2, 1);
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+    };
+    const persistIncomeLevels = () => { syncLegacyMonthlyIncome(); save(); syncSettings(); render(); };
+
+    window.updateIncomeLevel = (event, id, field) => {
+      event?.stopPropagation();
+      normalizeIncomeLevels();
+      const level = data.settings.incomeLevels.find(item => item.id === id);
+      if (!level) return;
+      level[field] = field === 'paycheck' ? num(event.target.value) : event.target.value;
+      persistIncomeLevels();
+    };
+    window.removeIncomeLevel = (event, id) => {
+      event?.preventDefault(); event?.stopPropagation();
+      normalizeIncomeLevels();
+      if (data.settings.incomeLevels.length === 1) return;
+      data.settings.incomeLevels = data.settings.incomeLevels.filter(item => item.id !== id);
+      persistIncomeLevels();
+    };
+    window.applyIncomeRanges = event => {
+      event?.preventDefault(); event?.stopPropagation();
+      const current = currentMonthKey();
+      data.months.forEach(month => { if (month.id < current) month.incomePaycheck = paycheckForMonth({...month, incomePaycheck:undefined}); });
+      data.settings.incomeHistoryLocked = true;
+      persistIncomeLevels();
+      data.months.filter(month => month.id < current).forEach(syncMonth);
+      const notice = document.querySelector('.income-history-notice');
+      if (notice) notice.textContent = 'Completed months now use the income levels shown above.';
+    };
+    window.addIncomeLevel = event => {
+      event?.preventDefault(); event?.stopPropagation();
+      normalizeIncomeLevels();
+      const start = currentMonthKey();
+      const current = [...data.settings.incomeLevels].sort((a,b) => String(b.start).localeCompare(String(a.start)))[0];
+      if (current && !current.end) current.end = monthBefore(start);
+      data.settings.incomeLevels.push({ id:`income-${Date.now()}`, start, end:'', paycheck:current ? num(current.paycheck) : round(num(data.settings.monthlyIncome) * 12 / 26) });
+      persistIncomeLevels();
+      const notice = document.querySelector('.income-history-notice');
+      if (notice) notice.textContent = 'New income level added. Set its paycheck amount and start month.';
+    };
+
+    renderIncomeLevels = (message = '') => {
+      setupIncomeHistory();
+      const host = document.getElementById('incomeHistory');
+      if (!host) return;
+      normalizeIncomeLevels();
+      const levels = [...data.settings.incomeLevels].sort((a,b) => String(b.start).localeCompare(String(a.start)));
+      host.innerHTML = `<p class="eyebrow">INCOME HISTORY</p><h2>Kevin income levels</h2><div class="income-level-head"><span>Biweekly Check Amt</span><span>From</span><span>Through</span><span></span></div><div>${levels.map((level, index) => {
+        const current = index === 0;
+        return `<div class="income-level-row"><label class="income-level-paycheck"><span>Biweekly Check Amt</span><input type="number" inputmode="decimal" aria-label="Biweekly Check Amount" value="${round(level.paycheck)}" onchange="window.updateIncomeLevel(event, '${level.id}', 'paycheck')"></label><div class="income-level-dates"><label><span>From</span><input type="month" aria-label="Income level start month" value="${level.start}" onchange="window.updateIncomeLevel(event, '${level.id}', 'start')"></label>${current ? '<label><span>Through</span><input class="income-level-current" type="text" aria-label="Income level end month" value="Current" readonly></label>' : `<label><span>Through</span><input type="month" aria-label="Income level end month" value="${level.end}" onchange="window.updateIncomeLevel(event, '${level.id}', 'end')"></label>`}</div><button type="button" class="income-level-remove" aria-label="Remove income level" ${levels.length === 1 ? 'disabled' : ''} onclick="window.removeIncomeLevel(event, '${level.id}')">×</button></div>`;
+      }).join('')}</div><div class="income-history-actions"><button type="button" class="button ghost" id="addIncomeLevel" data-income-level-bound="true" onclick="window.addIncomeLevel(event)">+ Add income level</button><button type="button" class="button primary" id="applyIncomeHistory" onclick="window.applyIncomeRanges(event)">Apply ranges to completed months</button></div><p class="income-history-notice">${message || 'Completed months stay fixed after they are applied; future completed months lock automatically.'}</p>`;
+    };
     render();
   })();
 </script>
