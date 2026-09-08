@@ -1444,4 +1444,15 @@ const todayTodoRender=render;render=()=>{todayTodoRender();setupBackupTools();re
     render();
   })();
 </script>
+<style>
+  #incomeHistory label { margin-top:0!important; }
+  @media (min-width:681px) {
+    .income-level-head,.income-level-row { grid-template-columns:132px 132px 132px 42px!important; gap:8px!important; }
+    .income-level-row { align-items:end!important; margin-bottom:8px!important; }
+    .income-level-row .income-level-paycheck { grid-column:1; grid-row:1; display:block!important; width:132px; }
+    .income-level-row .income-level-dates { display:contents!important; }
+    .income-level-row .income-level-dates > label { display:block; min-width:0; }
+    .income-level-row .income-level-remove { grid-column:4!important; grid-row:1!important; width:42px!important; height:42px!important; min-height:0!important; align-self:end!important; }
+  }
+</style>
 </body></html>
