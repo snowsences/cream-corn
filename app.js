@@ -627,7 +627,7 @@ const backupReminderRender=render;render=()=>{backupReminderRender();setupBackup
     if (title) {
       const brand = document.createElement('div');
       brand.className = 'brand-mark';
-      brand.innerHTML = '<img src="app-icon-v4.png" width="40" height="40" alt="Estuary">';
+      brand.innerHTML = '<img src="app-icon-v6.png" width="40" height="40" alt="Estuary">';
       title.replaceWith(brand);
     }
     document.querySelector('#expenseEditCategoryOptions [data-edit-category="Bills"]')?.remove();
@@ -707,6 +707,48 @@ const backupReminderRender=render;render=()=>{backupReminderRender();setupBackup
     };
     const settingsRender = render;
     render = () => { settingsRender(); setupExpenseSettingsTabs(); };
+    render();
+  })();
+
+  (() => {
+    let gradientNumber=0;
+    const smoothSvgPath = coordinates => {
+      if (!coordinates.length) return '';
+      if (coordinates.length === 1) return `M ${coordinates[0].x.toFixed(1)} ${coordinates[0].y.toFixed(1)}`;
+      let path=`M ${coordinates[0].x.toFixed(1)} ${coordinates[0].y.toFixed(1)}`;
+      for(let index=0;index<coordinates.length-1;index++){
+        const p0=coordinates[index-1]||coordinates[index];
+        const p1=coordinates[index];
+        const p2=coordinates[index+1];
+        const p3=coordinates[index+2]||p2;
+        const low=Math.min(p1.y,p2.y),high=Math.max(p1.y,p2.y);
+        const cp1x=p1.x+(p2.x-p0.x)/6;
+        const cp1y=Math.max(low,Math.min(high,p1.y+(p2.y-p0.y)/6));
+        const cp2x=p2.x-(p3.x-p1.x)/6;
+        const cp2y=Math.max(low,Math.min(high,p2.y-(p3.y-p1.y)/6));
+        path+=` C ${cp1x.toFixed(1)} ${cp1y.toFixed(1)}, ${cp2x.toFixed(1)} ${cp2y.toFixed(1)}, ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`;
+      }
+      return path;
+    };
+
+    chartSvg = (points,color) => {
+      if(!points.length)return '<div class="chart-empty">No monthly data yet.</div>';
+      const width=520,height=220,left=52,right=16,top=18,bottom=42;
+      const plotWidth=width-left-right,plotHeight=height-top-bottom;
+      const values=points.map(point=>point.average),trend=trendPoints(values);
+      const min=Math.min(0,...values,...trend),max=Math.max(0,...values,...trend),range=max-min||1;
+      const x=index=>left+index*plotWidth/Math.max(points.length-1,1);
+      const y=value=>top+(max-value)*plotHeight/range;
+      const yTicks=[max,round((max+min)/2),min];
+      const xIndexes=[...new Set([0,Math.floor((points.length-1)/2),points.length-1])];
+      const coordinates=points.map((point,index)=>({x:x(index),y:y(point.average)}));
+      const linePath=smoothSvgPath(coordinates);
+      const baseline=height-bottom;
+      const areaPath=`${linePath} L ${coordinates.at(-1).x.toFixed(1)} ${baseline} L ${coordinates[0].x.toFixed(1)} ${baseline} Z`;
+      const trendPath=trend.length?`M ${x(0).toFixed(1)} ${y(trend[0]).toFixed(1)} L ${x(points.length-1).toFixed(1)} ${y(trend[1]).toFixed(1)}`:'';
+      const gradientId=`chart-gradient-${++gradientNumber}`;
+      return `<svg class="chart-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="Smoothed three-month rolling average chart with trend line"><defs><linearGradient id="${gradientId}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${color}" stop-opacity=".18"/><stop offset="55%" stop-color="${color}" stop-opacity=".07"/><stop offset="100%" stop-color="${color}" stop-opacity="0"/></linearGradient></defs>${yTicks.map(value=>`<g><line class="chart-grid-line" x1="${left}" x2="${width-right}" y1="${y(value)}" y2="${y(value)}"/><text class="chart-axis-label" x="${left-8}" y="${y(value)+4}" text-anchor="end">${money(value)}</text></g>`).join('')}<path class="chart-gradient-area" d="${areaPath}" fill="url(#${gradientId})"/><line class="chart-axis" x1="${left}" x2="${width-right}" y1="${baseline}" y2="${baseline}"/><path d="${trendPath}" fill="none" stroke="${color}" stroke-opacity=".5" stroke-width="3" stroke-dasharray="7 6" stroke-linecap="round"/><path d="${linePath}" fill="none" stroke="${color}" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/>${points.map((point,index)=>`<g><circle cx="${x(index)}" cy="${y(point.average)}" r="3.5" fill="${color}"/><circle class="chart-point" data-chart-label="${escapeHtml(point.label)}" data-chart-value="${money(point.value)}" data-chart-average="${money(point.average)}" cx="${x(index)}" cy="${y(point.average)}" r="13" fill="${color}" fill-opacity=".001"/></g>`).join('')}${xIndexes.map(index=>`<g><line class="chart-axis" x1="${x(index)}" x2="${x(index)}" y1="${baseline}" y2="${baseline+5}"/><text class="chart-axis-label" x="${x(index)}" y="${height-15}" text-anchor="middle">${points[index].label.split(' ')[0].slice(0,3)} ${points[index].label.split(' ').at(-1)}</text></g>`).join('')}</svg>`;
+    };
     render();
   })();
 
@@ -1408,6 +1450,9 @@ const backupReminderRender=render;render=()=>{backupReminderRender();setupBackup
     const trackedSpendingCategory = (monthId, subcategory) => round(data.entries
       .filter(entry => entry.month === monthId && entry.type === 'Spending' && entry.subcategory === subcategory)
       .reduce((sum, entry) => sum + num(entry.final), 0));
+    const travelYearTotal = year => historicTravel[year]?.total ?? round(data.entries
+      .filter(entry => entry.month.startsWith(`${year}-`) && entry.month >= trackedCategoryStart && entry.type === 'Spending' && entry.subcategory === 'Travel')
+      .reduce((sum, entry) => sum + num(entry.final), 0));
     const spendingPoints = metric => chartMonths().map(month => {
       let value = num(month.spending);
       if (metric === 'travel') value = month.id < trackedCategoryStart
@@ -1416,7 +1461,14 @@ const backupReminderRender=render;render=()=>{backupReminderRender();setupBackup
       if (metric === 'dining') value = month.id < trackedCategoryStart
         ? 0
         : trackedSpendingCategory(month.id, 'Dining');
-      return { label:month.label, value:round(value) };
+      const year = month.id.slice(0,4);
+      const partialYear = historicTravel[year]?.months < 12 || year === currentMonthKey().slice(0,4);
+      return {
+        label:month.label,
+        value:round(value),
+        secondaryLabel:metric === 'travel' ? `${year} ${partialYear ? 'so far' : 'total'}` : '',
+        secondaryValue:metric === 'travel' ? money(travelYearTotal(year)) : ''
+      };
     });
     const spendingTabs = () => `<div class="bill-tabs spending-tabs">${[['all','All'],['travel','Travel'],['dining','Dining']].map(([value,label]) => `<button class="${spendingMetric===value?'selected':''}" data-spending-series="${value}">${label}</button>`).join('')}</div>`;
 
@@ -1426,7 +1478,18 @@ const backupReminderRender=render;render=()=>{backupReminderRender();setupBackup
       document.getElementById('categoryBarsChart')?.remove();
       const spendingCard = [...document.querySelectorAll('#chartArea .chart-grid .chart-card')]
         .find(card => card.querySelector('h3')?.textContent.trim() === 'Spending');
-      if (spendingCard) spendingCard.outerHTML = chartCard('Spending', spendingPoints(spendingMetric), '#f0845c', spendingTabs());
+      if (spendingCard) {
+        const points = spendingPoints(spendingMetric);
+        spendingCard.outerHTML = chartCard('Spending', points, '#f0845c', spendingTabs());
+        if (spendingMetric === 'travel') {
+          const replacement = [...document.querySelectorAll('#chartArea .chart-grid .chart-card')]
+            .find(card => card.querySelector('h3')?.textContent.trim() === 'Spending');
+          replacement?.querySelectorAll('.chart-point').forEach((point, index) => {
+            point.dataset.chartSecondaryLabel = points[index]?.secondaryLabel || '';
+            point.dataset.chartSecondaryValue = points[index]?.secondaryValue || '';
+          });
+        }
+      }
     };
     document.addEventListener('click', event => {
       const button = event.target.closest?.('[data-spending-series]');
@@ -1434,5 +1497,102 @@ const backupReminderRender=render;render=()=>{backupReminderRender();setupBackup
       spendingMetric = button.dataset.spendingSeries;
       renderCharts();
     });
+    render();
+  })();
+
+  (() => {
+    showChartTooltip = (point, event) => {
+      const secondaryLabel = point.dataset.chartSecondaryLabel || '3-month average';
+      const secondaryValue = point.dataset.chartSecondaryValue || point.dataset.chartAverage;
+      chartTooltip.innerHTML = `<b>${escapeHtml(point.dataset.chartLabel)}</b><span>${escapeHtml(point.dataset.chartValue)}</span><span>${escapeHtml(secondaryLabel)}: ${escapeHtml(secondaryValue)}</span>`;
+      const gap=14,width=chartTooltip.offsetWidth,height=chartTooltip.offsetHeight;
+      const left=Math.min(window.innerWidth-width-10,Math.max(10,event.clientX+gap));
+      const top=Math.min(window.innerHeight-height-10,Math.max(10,event.clientY-height-gap));
+      chartTooltip.style.left=`${left}px`;
+      chartTooltip.style.top=`${top}px`;
+      chartTooltip.classList.add('visible');
+    };
+
+    const insightHost = document.getElementById('overviewInsights');
+    let insightSignature = '';
+    let selectedInsights = [];
+    const shuffled = values => {
+      const copy = [...values];
+      for (let index=copy.length-1; index>0; index--) {
+        const swap = Math.floor(Math.random() * (index + 1));
+        [copy[index],copy[swap]] = [copy[swap],copy[index]];
+      }
+      return copy;
+    };
+    const renderRandomInsights = () => {
+      if (!insightHost) return;
+      const current = currentMonthKey();
+      const completed = data.months.filter(month => month.id < current).sort((a,b) => a.id.localeCompare(b.id));
+      const latest = completed.at(-1);
+      if (!latest) { insightHost.classList.add('hidden'); return; }
+      const messages = [];
+      const latestMonthName = monthLabels[Number(latest.id.slice(5,7))-1];
+      const previousThree = completed.slice(-4,-1);
+      if (previousThree.length === 3) {
+        const average = previousThree.reduce((sum,month)=>sum+num(month.spending),0)/3;
+        const difference = round(num(latest.spending)-average);
+        if (Math.abs(difference)>=1) messages.push(`Spending in <b>${latestMonthName.slice(0,3)}</b> is <b>${money(Math.abs(difference))}</b> ${difference<0?'below':'above'} your three-month average.`);
+      }
+      const lastYearMonth = data.months.find(month=>month.id===`${Number(latest.id.slice(0,4))-1}-${latest.id.slice(5)}`);
+      if (lastYearMonth && num(lastYearMonth.spending)>0) {
+        const difference=round(num(latest.spending)-num(lastYearMonth.spending));
+        if (Math.abs(difference)>=1) messages.push(`You spent <b>${money(Math.abs(difference))}</b> ${difference<0?'less':'more'} than last ${latestMonthName}.`);
+      }
+      if (lastYearMonth && num(lastYearMonth.groceries)>0) {
+        const change=round((num(latest.groceries)-num(lastYearMonth.groceries))/num(lastYearMonth.groceries)*100);
+        if (change) messages.push(`Food is <b>${Math.abs(change)}%</b> ${change>0?'above':'below'} last ${latestMonthName}.`);
+      }
+      const year=Number(latest.id.slice(0,4)),cutoff=latest.id.slice(5);
+      const thisYear=completed.filter(month=>month.id.startsWith(`${year}-`)&&month.id.slice(5)<=cutoff);
+      const savedToDate=thisYear.reduce((sum,month)=>sum+total(month).saved,0);
+      const savedLastYear=data.months.filter(month=>month.id.startsWith(`${year-1}-`)&&month.id.slice(5)<=cutoff).reduce((sum,month)=>sum+total(month).saved,0);
+      const savedDifference=round(savedToDate-savedLastYear);
+      if (savedDifference) messages.push(`You've saved <b>${money(Math.abs(savedDifference))}</b> ${savedDifference>0?'more':'less'} than this point last year.`);
+      if (savedToDate) messages.push(`You've saved <b>${money(savedToDate)}</b> so far in ${year}.`);
+      if (thisYear.length) {
+        const best=[...thisYear].sort((a,b)=>total(b).saved-total(a).saved)[0];
+        messages.push(`<b>${monthLabels[Number(best.id.slice(5,7))-1]}</b> is your strongest savings month this year at <b>${money(total(best).saved)}</b>.`);
+      }
+      const recent=completed.slice(-12);
+      if (recent.length>=3) {
+        const lowest=[...recent].sort((a,b)=>num(a.spending)-num(b.spending))[0];
+        messages.push(`<b>${lowest.label}</b> had your lowest Spending total in the last ${recent.length} months: <b>${money(lowest.spending)}</b>.`);
+      }
+      let streak=0;
+      for (let index=completed.length-1; index>=0 && total(completed[index]).saved>0; index--) streak++;
+      if (streak>=2) messages.push(`You've saved money for <b>${streak} completed months</b> in a row.`);
+      const signature=messages.join('\n');
+      if (signature!==insightSignature) {
+        insightSignature=signature;
+        selectedInsights=shuffled(messages).slice(0,3);
+      }
+      insightHost.innerHTML=selectedInsights.map(message=>`<p class="overview-insight">${message}</p>`).join('');
+      insightHost.classList.toggle('hidden',!selectedInsights.length);
+    };
+    const previousRender=render;
+    render=()=>{previousRender();renderRandomInsights();if(displayMode)applyDisplayMode()};
+    renderRandomInsights();if(displayMode)applyDisplayMode();
+  })();
+
+  (() => {
+    const previousMonthId = monthId => {
+      const [year,month]=monthId.split('-').map(Number);
+      const date=new Date(year,month-2,1);
+      return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}`;
+    };
+    const updateSavingsLatest = () => {
+      const savingsCard=[...document.querySelectorAll('#chartArea .chart-grid .chart-card')]
+        .find(card=>card.querySelector('h3')?.textContent.trim()==='Savings');
+      const lastMonth=data.months.find(month=>month.id===previousMonthId(currentMonthKey()));
+      const value=savingsCard?.querySelector('.chart-value');
+      if(value)value.textContent=`Last month: ${money(lastMonth ? total(lastMonth).saved : 0)}`;
+    };
+    const previousRenderCharts=renderCharts;
+    renderCharts=()=>{previousRenderCharts();updateSavingsLatest()};
     render();
   })();
