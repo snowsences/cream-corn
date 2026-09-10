@@ -1382,3 +1382,57 @@ const backupReminderRender=render;render=()=>{backupReminderRender();setupBackup
     render=()=>{previousRender();renderInvestments();syncHeaderAction();if(displayMode)applyDisplayMode()};
     renderInvestments();syncHeaderAction();if(displayMode)applyDisplayMode();
   })();
+
+  (() => {
+    let spendingMetric = 'all';
+    const trackedCategoryStart = '2027-09';
+    const historicTravel = {
+      '2021': { total:3000, months:12 },
+      '2022': { total:4500, months:12 },
+      '2023': { total:13000, months:12 },
+      '2024': { total:15300, months:12 },
+      '2025': { total:18000, months:12 },
+      '2026': { total:15700, months:9 }
+    };
+
+    const historicalTravelForMonth = monthId => {
+      const history = historicTravel[monthId.slice(0,4)];
+      const monthNumber = Number(monthId.slice(5,7));
+      if (!history || monthNumber > history.months) return 0;
+      const baseCents = Math.floor(history.total * 100 / history.months);
+      const cents = monthNumber === history.months
+        ? history.total * 100 - baseCents * (history.months - 1)
+        : baseCents;
+      return cents / 100;
+    };
+    const trackedSpendingCategory = (monthId, subcategory) => round(data.entries
+      .filter(entry => entry.month === monthId && entry.type === 'Spending' && entry.subcategory === subcategory)
+      .reduce((sum, entry) => sum + num(entry.final), 0));
+    const spendingPoints = metric => chartMonths().map(month => {
+      let value = num(month.spending);
+      if (metric === 'travel') value = month.id < trackedCategoryStart
+        ? historicalTravelForMonth(month.id)
+        : trackedSpendingCategory(month.id, 'Travel');
+      if (metric === 'dining') value = month.id < trackedCategoryStart
+        ? 0
+        : trackedSpendingCategory(month.id, 'Dining');
+      return { label:month.label, value:round(value) };
+    });
+    const spendingTabs = () => `<div class="bill-tabs spending-tabs">${[['all','All'],['travel','Travel'],['dining','Dining']].map(([value,label]) => `<button class="${spendingMetric===value?'selected':''}" data-spending-series="${value}">${label}</button>`).join('')}</div>`;
+
+    const previousRenderCharts = renderCharts;
+    renderCharts = () => {
+      previousRenderCharts();
+      document.getElementById('categoryBarsChart')?.remove();
+      const spendingCard = [...document.querySelectorAll('#chartArea .chart-grid .chart-card')]
+        .find(card => card.querySelector('h3')?.textContent.trim() === 'Spending');
+      if (spendingCard) spendingCard.outerHTML = chartCard('Spending', spendingPoints(spendingMetric), '#f0845c', spendingTabs());
+    };
+    document.addEventListener('click', event => {
+      const button = event.target.closest?.('[data-spending-series]');
+      if (!button) return;
+      spendingMetric = button.dataset.spendingSeries;
+      renderCharts();
+    });
+    render();
+  })();
